@@ -7,97 +7,123 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Centro {
-  id        Int      @id @default(autoincrement())
-  nombre    String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  usuarios   Usuario[]
-  estudiantes Estudiante[]
-  cursos     Curso[]
-  periodos   Periodo[]
-  asignaturas Asignatura[]
-  matriculas  Matricula[]
-  notas      Nota[]
-  evidencias Evidencia[]
-  cronogramas Cronograma[]
-  auditLogs  AuditLog[]
-}
-
-model Usuario {
-  id           Int      @id @default(autoincrement())
-  centroId     Int
-  email        String
-  passwordHash String
-  nombre       String
-  rol          Rol
-  estado       String   @default("activo")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  centro         Centro       @relation(fields: [centroId], references: [id], onDelete: Restrict)
-  notasAutor     Nota[]       @relation("NotaAutor")
-  evidencias     Evidencia[]
-  cronogramas    Cronograma[]
-  auditLogs      AuditLog[]
-  docenteAsignaturas AsignaturaDocente[]
-
-  @@unique([centroId, email])
-  @@index([centroId])
-}
-
 enum Rol {
+  SUPERADMIN
+  RECTOR
   ADMIN
+  COORDINADOR
   DOCENTE
   ESTUDIANTE
   PADRE
 }
 
+enum EstadoCentro {
+  ACTIVO
+  SUSPENDIDO
+}
+
+model Centro {
+  id         String       @id @default(uuid())
+  nombre     String       @unique
+  subdominio String?      @unique
+  estado     EstadoCentro @default(ACTIVO)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  usuarios    Usuario[]
+  estudiantes Estudiante[]
+  cursos      Curso[]
+  periodos    Periodo[]
+  asignaturas Asignatura[]
+  matriculas  Matricula[]
+  notas       Nota[]
+  evidencias  Evidencia[]
+  cronogramas Cronograma[]
+  auditLogs   AuditLog[]
+}
+
+model Usuario {
+  id           String   @id @default(uuid())
+  centroId     String?
+  email        String   @unique
+  passwordHash String
+  nombre       String
+  apellido     String   @default("")
+  rol          Rol
+  estado       String   @default("activo")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  centro            Centro?                 @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  estudiante        Estudiante?
+  acudienteDe       EstudiantePadre[]       @relation("Padre")
+  notasAutor        Nota[]                  @relation("NotaAutor")
+  evidencias        Evidencia[]
+  cronogramas       Cronograma[]
+  auditLogs         AuditLog[]
+  docenteAsignaturas CursoAsignaturaDocente[]
+
+  @@index([centroId])
+}
+
 model Estudiante {
-  id        Int      @id @default(autoincrement())
-  centroId  Int
-  nombre    String
+  id        String   @id @default(uuid())
+  centroId  String
+  usuarioId String   @unique
   documento String
   estado    String   @default("activo")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  centro     Centro      @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  centro     Centro            @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  usuario    Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
   matriculas Matricula[]
   notas      Nota[]
   evidencias Evidencia[]
+  acudientes EstudiantePadre[]
 
   @@unique([centroId, documento])
-  @@index([centroId, nombre])
+  @@index([centroId])
+}
+
+model EstudiantePadre {
+  id           String @id @default(uuid())
+  estudianteId String
+  padreId      String
+  parentesco   String @default("")
+
+  estudiante Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Restrict)
+  padre      Usuario    @relation("Padre", fields: [padreId], references: [id], onDelete: Restrict)
+
+  @@unique([estudianteId, padreId])
+  @@index([padreId])
 }
 
 model Curso {
-  id       Int    @id @default(autoincrement())
-  centroId Int
+  id       String @id @default(uuid())
+  centroId String
   nombre   String
   nivel    String @default("")
 
-  centro       Centro       @relation(fields: [centroId], references: [id], onDelete: Restrict)
-  matriculas   Matricula[]
-  notas        Nota[]
-  evidencias   Evidencia[]
-  cronogramas  Cronograma[]
-  asignaturaDocentes AsignaturaDocente[]
+  centro           Centro                  @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  matriculas       Matricula[]
+  evidencias       Evidencia[]
+  cronogramas      Cronograma[]
+  cursoAsignaturas CursoAsignaturaDocente[]
 
   @@unique([centroId, nombre])
   @@index([centroId])
 }
 
 model Periodo {
-  id         Int      @id @default(autoincrement())
-  centroId   Int
-  nombre     String
+  id          String   @id @default(uuid())
+  centroId    String
+  nombre      String
   fechaInicio DateTime
-  fechaFin   DateTime
-  createdAt  DateTime @default(now())
+  fechaFin    DateTime
+  createdAt   DateTime @default(now())
 
-  centro     Centro     @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  centro     Centro      @relation(fields: [centroId], references: [id], onDelete: Restrict)
   matriculas Matricula[]
   notas      Nota[]
   evidencias Evidencia[]
@@ -106,101 +132,100 @@ model Periodo {
 }
 
 model Asignatura {
-  id       Int    @id @default(autoincrement())
-  centroId Int
+  id       String @id @default(uuid())
+  centroId String
   nombre   String
 
-  centro        Centro             @relation(fields: [centroId], references: [id], onDelete: Restrict)
-  docentes      AsignaturaDocente[]
-  notas         Nota[]
-  cronogramas   Cronograma[]
+  centro           Centro                  @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  cursoAsignaturas CursoAsignaturaDocente[]
+  cronogramas      Cronograma[]
 
   @@unique([centroId, nombre])
 }
 
-model AsignaturaDocente {
-  id           Int @id @default(autoincrement())
-  asignaturaId Int
-  docenteId    Int
-  cursoId      Int
+model CursoAsignaturaDocente {
+  id           String @id @default(uuid())
+  asignaturaId String
+  docenteId    String
+  cursoId      String
 
   asignatura Asignatura @relation(fields: [asignaturaId], references: [id], onDelete: Restrict)
   docente    Usuario    @relation(fields: [docenteId], references: [id], onDelete: Restrict)
   curso      Curso      @relation(fields: [cursoId], references: [id], onDelete: Restrict)
+  notas      Nota[]
 
   @@unique([asignaturaId, docenteId, cursoId])
+  @@index([cursoId])
 }
 
 model Matricula {
-  id          Int    @id @default(autoincrement())
-  centroId    Int
-  estudianteId Int
-  cursoId     Int
-  periodoId   Int
+  id           String @id @default(uuid())
+  centroId     String
+  estudianteId String
+  cursoId      String
+  periodoId    String
 
-  centro     Centro   @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  centro     Centro     @relation(fields: [centroId], references: [id], onDelete: Restrict)
   estudiante Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Restrict)
-  curso      Curso    @relation(fields: [cursoId], references: [id], onDelete: Restrict)
-  periodo    Periodo  @relation(fields: [periodoId], references: [id], onDelete: Restrict)
+  curso      Curso      @relation(fields: [cursoId], references: [id], onDelete: Restrict)
+  periodo    Periodo    @relation(fields: [periodoId], references: [id], onDelete: Restrict)
 
   @@unique([estudianteId, cursoId, periodoId])
   @@index([centroId, cursoId])
 }
 
 model Nota {
-  id           Int      @id @default(autoincrement())
-  centroId     Int
-  estudianteId Int
-  asignaturaId Int
-  cursoId      Int
-  periodoId    Int
-  valor        Decimal  @db.Decimal(5, 2)
-  autorId      Int
-  fecha        DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                      String   @id @default(uuid())
+  centroId                String
+  estudianteId            String
+  cursoAsignaturaDocenteId String
+  periodoId               String
+  valor                   Decimal  @db.Decimal(5, 2)
+  autorId                 String
+  fecha                   DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 
-  centro     Centro     @relation(fields: [centroId], references: [id], onDelete: Restrict)
-  estudiante Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Restrict)
-  asignatura Asignatura @relation(fields: [asignaturaId], references: [id], onDelete: Restrict)
-  curso      Curso      @relation(fields: [cursoId], references: [id], onDelete: Restrict)
-  periodo    Periodo    @relation(fields: [periodoId], references: [id], onDelete: Restrict)
-  autor      Usuario    @relation("NotaAutor", fields: [autorId], references: [id], onDelete: Restrict)
+  centro            Centro                 @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  estudiante        Estudiante             @relation(fields: [estudianteId], references: [id], onDelete: Restrict)
+  cursoAsignatura   CursoAsignaturaDocente @relation(fields: [cursoAsignaturaDocenteId], references: [id], onDelete: Restrict)
+  periodo           Periodo                @relation(fields: [periodoId], references: [id], onDelete: Restrict)
+  autor             Usuario                @relation("NotaAutor", fields: [autorId], references: [id], onDelete: Restrict)
 
-  @@index([centroId, estudianteId, asignaturaId, periodoId])
-  @@index([centroId, cursoId, periodoId])
+  @@unique([estudianteId, cursoAsignaturaDocenteId, periodoId])
+  @@index([centroId, periodoId])
 }
 
 model Evidencia {
-  id           Int      @id @default(autoincrement())
-  centroId     Int
-  estudianteId Int?
-  cursoId      Int
-  periodoId    Int
+  id           String   @id @default(uuid())
+  centroId     String
+  estudianteId String?
+  cursoId      String
+  periodoId    String
   titulo       String
   descripcion  String   @default("")
   archivoUrl   String
   mime         String
-  autorId      Int
+  autorId      String
   createdAt    DateTime @default(now())
 
-  centro     Centro     @relation(fields: [centroId], references: [id], onDelete: Restrict)
+  centro     Centro      @relation(fields: [centroId], references: [id], onDelete: Restrict)
   estudiante Estudiante? @relation(fields: [estudianteId], references: [id], onDelete: Restrict)
-  curso      Curso      @relation(fields: [cursoId], references: [id], onDelete: Restrict)
-  periodo    Periodo    @relation(fields: [periodoId], references: [id], onDelete: Restrict)
-  autor      Usuario    @relation(fields: [autorId], references: [id], onDelete: Restrict)
+  curso      Curso       @relation(fields: [cursoId], references: [id], onDelete: Restrict)
+  periodo    Periodo     @relation(fields: [periodoId], references: [id], onDelete: Restrict)
+  autor      Usuario     @relation(fields: [autorId], references: [id], onDelete: Restrict)
 
   @@index([centroId, cursoId, periodoId])
 }
 
 model Cronograma {
-  id           Int      @id @default(autoincrement())
-  centroId     Int
-  cursoId      Int
-  asignaturaId Int
+  id           String   @id @default(uuid())
+  centroId     String
+  cursoId      String
+  asignaturaId String
   titulo       String
   descripcion  String   @default("")
   fecha        DateTime
-  autorId      Int
+  autorId      String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -213,13 +238,15 @@ model Cronograma {
 }
 
 model AuditLog {
-  id        Int      @id @default(autoincrement())
-  centroId  Int
-  usuarioId Int
-  accion    String
-  entidad   String
-  entidadId String   @default("")
-  fecha     DateTime @default(now())
+  id          String   @id @default(uuid())
+  centroId    String
+  usuarioId   String
+  accion      String
+  entidad     String
+  entidadId   String   @default("")
+  descripcion String   @default("")
+  ip          String   @default("")
+  fecha       DateTime @default(now())
 
   centro  Centro  @relation(fields: [centroId], references: [id], onDelete: Restrict)
   usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)

@@ -10,10 +10,9 @@ export default async function PanelLayout({
 }) {
   await connection();
   const user = await requireUser();
-  const centro = await prisma.centro.findUnique({
-    where: { id: user.centroId },
-    select: { nombre: true },
-  });
+const centro = user.centroId
+    ? await prisma.centro.findUnique({ where: { id: user.centroId } })
+    : null;
 
   return (
     <Shell

@@ -7,8 +7,10 @@ import {
 } from "@/lib/modules/estudiantes/actions";
 
 type Initial = {
-  id?: number;
+  id?: string;
   nombre?: string;
+  apellido?: string;
+  email?: string;
   documento?: string;
 };
 
@@ -21,9 +23,9 @@ export function EstudianteForm({ initial = {} }: { initial?: Initial }) {
   useEffect(() => {
     if (state.ok) {
       const form = document.getElementById("est-form") as HTMLFormElement | null;
-      form?.reset();
+      if (!initial.id) form?.reset();
     }
-  }, [state]);
+  }, [state, initial]);
 
   return (
     <form id="est-form" action={formAction} className="space-y-3">
@@ -32,7 +34,21 @@ export function EstudianteForm({ initial = {} }: { initial?: Initial }) {
         <input
           name="nombre"
           defaultValue={initial.nombre ?? ""}
-          placeholder="Nombre completo"
+          placeholder="Nombres"
+          required
+          className="field-input"
+        />
+        <input
+          name="apellido"
+          defaultValue={initial.apellido ?? ""}
+          placeholder="Apellidos"
+          className="field-input"
+        />
+        <input
+          name="email"
+          type="email"
+          defaultValue={initial.email ?? ""}
+          placeholder="Correo del estudiante"
           required
           className="field-input"
         />
@@ -41,6 +57,14 @@ export function EstudianteForm({ initial = {} }: { initial?: Initial }) {
           defaultValue={initial.documento ?? ""}
           placeholder="Documento (cédula/DNI)"
           required
+          className="field-input"
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder={initial.id ? "Nueva contraseña (opcional)" : "Contraseña (mín. 6)"}
+          required={!initial.id}
+          minLength={initial.id ? undefined : 6}
           className="field-input"
         />
       </div>

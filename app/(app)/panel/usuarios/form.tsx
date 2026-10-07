@@ -10,8 +10,9 @@ export function UsuarioForm({
   initial,
 }: {
   initial?: {
-    id?: number;
+    id?: string;
     nombre?: string;
+    apellido?: string;
     email?: string;
     rol?: string;
   };
@@ -34,9 +35,15 @@ export function UsuarioForm({
       <div className="grid gap-3 sm:grid-cols-2">
         <input
           name="nombre"
-          placeholder="Nombre completo"
+          placeholder="Nombres"
           defaultValue={initial?.nombre ?? ""}
           required
+          className="field-input"
+        />
+        <input
+          name="apellido"
+          placeholder="Apellidos"
+          defaultValue={initial?.apellido ?? ""}
           className="field-input"
         />
         <input
@@ -65,10 +72,12 @@ export function UsuarioForm({
           defaultValue={initial?.rol ?? "DOCENTE"}
           className="field-input"
         >
+          <option value="RECTOR">Rector(a)</option>
+          <option value="COORDINADOR">Coordinador(a)</option>
           <option value="ADMIN">Administrador</option>
           <option value="DOCENTE">Docente</option>
           <option value="ESTUDIANTE">Estudiante</option>
-          <option value="PADRE">Padre</option>
+          <option value="PADRE">Acudiente</option>
         </select>
       </div>
       {state.error ? (
@@ -78,7 +87,7 @@ export function UsuarioForm({
         <p className="text-[12px] text-success">Usuario guardado</p>
       ) : null}
       <button type="submit" disabled={pending} className="primary-button">
-        {pending ? "Guardando…" : "Crear usuario"}
+        {pending ? "Guardando…" : initial?.id ? "Actualizar" : "Crear usuario"}
       </button>
     </form>
   );

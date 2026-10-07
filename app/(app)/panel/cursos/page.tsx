@@ -4,13 +4,13 @@ import { deleteCurso } from "@/lib/modules/cursos/actions";
 import { CursoForm } from "./form";
 
 export default async function CursosPage() {
-  const user = await requireRole("ADMIN", "DOCENTE");
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR", "DOCENTE");
 
   const cursos = await prisma.curso.findMany({
-    where: { centroId: user.centroId },
+    where: { centroId: user.centroId ?? "" },
     orderBy: { nombre: "asc" },
     include: {
-      _count: { select: { matriculas: true, asignaturaDocentes: true } },
+      _count: { select: { matriculas: true, cursoAsignaturas: true } },
     },
   });
 
@@ -54,7 +54,7 @@ export default async function CursosPage() {
                   </td>
                   <td className="text-muted">{c.nivel || "—"}</td>
                   <td>{c._count.matriculas}</td>
-                  <td>{c._count.asignaturaDocentes}</td>
+                  <td>{c._count.cursoAsignaturas}</td>
                   <td className="text-right">
                     <form action={deleteCurso} className="inline">
                       <input type="hidden" name="id" value={c.id} />

@@ -18,7 +18,7 @@ export async function savePeriodo(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const user = await requireRole("ADMIN");
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR");
 
   const parsed = schema.safeParse({
     nombre: formData.get("nombre"),
@@ -37,15 +37,15 @@ export async function savePeriodo(
   try {
     await prisma.periodo.create({
       data: {
-        centroId: user.centroId,
+        centroId: user.centroId!,
         nombre,
         fechaInicio: new Date(fechaInicio),
         fechaFin: new Date(fechaFin),
       },
     });
     await logAudit({
-      centroId: user.centroId,
-      usuarioId: Number(user.id),
+      centroId: user.centroId!,
+      usuarioId: user.id,
       accion: "CREATE",
       entidad: "Periodo",
     });
@@ -58,15 +58,15 @@ export async function savePeriodo(
 }
 
 export async function deletePeriodo(formData: FormData) {
-  const user = await requireRole("ADMIN");
-  const id = Number(formData.get("id"));
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR");
+  const id = String(formData.get("id") ?? "");
   if (!id) return;
 
   try {
-    await prisma.periodo.delete({ where: { id, centroId: user.centroId } });
+    await prisma.periodo.delete({ where: { id, centroId: user.centroId! } });
     await logAudit({
-      centroId: user.centroId,
-      usuarioId: Number(user.id),
+      centroId: user.centroId!,
+      usuarioId: user.id,
       accion: "DELETE",
       entidad: "Periodo",
       entidadId: id,

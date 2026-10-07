@@ -1,44 +1,80 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Rol } from "@prisma/client";
 import { hash } from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const PASSWORDS = {
-  admin: "Admin123!",
-  docente: "Profe123!",
-  estudiante: "Alumno123!",
-  padre: "Padre123!",
+type SeedUser = {
+  email: string;
+  password: string;
+  nombre: string;
+  apellido: string;
+  rol: Rol;
 };
 
-async function main() {
-  const centro = await prisma.centro.upsert({
-    where: { nombre: "Academia Demo" },
+const DEMO_USERS: SeedUser[] = [
+  { email: "admin@demo.com", password: "Admin123!", nombre: "Rector", apellido: "Demo", rol: "RECTOR" },
+  { email: "profe@demo.com", password: "Profe123!", nombre: "Docente", apellido: "Demo", rol: "DOCENTE" },
+  { email: "alumno@demo.com", password: "Alumno123!", nombre: "Alumno", apellido: "Demo", rol: "ESTUDIANTE" },
+  { email: "padre@demo.com", password: "Padre123!", nombre: "Acudiente", apellido: "Demo", rol: "PADRE" },
+];
+
+const NORTE_USERS: SeedUser[] = [
+  { email: "admin@norte.com", password: "Norte123!", nombre: "Rector", apellido: "Norte", rol: "RECTOR" },
+];
+
+async function crearCentro(nombre: string, subdominio: string) {
+  return prisma.centro.upsert({
+    where: { nombre },
+    update: { subdominio },
+    create: { nombre, subdominio },
+  });
+}
+
+async function crearUsuario(centroId: string, u: SeedUser) {
+  return prisma.usuario.upsert({
+    where: { email: u.email },
     update: {},
-    create: { nombre: "Academia Demo" },
+    create: {
+      centroId,
+      email: u.email,
+      passwordHash: await hash(u.password, 10),
+      nombre: u.nombre,
+      apellido: u.apellido,
+      rol: u.rol,
+    },
+  });
+}
+
+async function main() {
+  const demo = await crearCentro("Academia Demo", "demo");
+  const norte = await crearCentro("Colegio Norte", "norte");
+
+  for (const u of DEMO_USERS) await crearUsuario(demo.id, u);
+  for (const u of NORTE_USERS) await crearUsuario(norte.id, u);
+
+  const alumno = await prisma.usuario.findUniqueOrThrow({ where: { email: "alumno@demo.com" } });
+  const padre = await prisma.usuario.findUniqueOrThrow({ where: { email: "padre@demo.com" } });
+
+  const estudiante = await prisma.estudiante.upsert({
+    where: { usuarioId: alumno.id },
+    update: {},
+    create: { centroId: demo.id, usuarioId: alumno.id, documento: "DEMO-001" },
   });
 
-  const usuarios: Array<[string, string, "ADMIN" | "DOCENTE" | "ESTUDIANTE" | "PADRE"]> = [
-    ["admin@demo.com", PASSWORDS.admin, "ADMIN"],
-    ["profe@demo.com", PASSWORDS.docente, "DOCENTE"],
-    ["alumno@demo.com", PASSWORDS.estudiante, "ESTUDIANTE"],
-    ["padre@demo.com", PASSWORDS.padre, "PADRE"],
-  ];
+  await prisma.estudiantePadre.upsert({
+    where: {
+      estudianteId_padreId: { estudianteId: estudiante.id, padreId: padre.id },
+    },
+    update: {},
+    create: { estudianteId: estudiante.id, padreId: padre.id, parentesco: "Padre" },
+  });
 
-  for (const [email, password, rol] of usuarios) {
-    await prisma.usuario.upsert({
-      where: { centroId_email: { centroId: centro.id, email } },
-      update: {},
-      create: {
-        centroId: centro.id,
-        email,
-        passwordHash: await hash(password, 10),
-        nombre: rol.charAt(0) + rol.slice(1).toLowerCase(),
-        rol,
-      },
-    });
-  }
-
-  console.log("Seed OK — centro:", centro.nombre, "| usuarios:", usuarios.map(([e]) => e).join(", "));
+  console.log(
+    "Seed OK — centros: Academia Demo, Colegio Norte | demo:",
+    DEMO_USERS.map((u) => u.email).join(", "),
+    "| norte:",
+    NORTE_USERS.map((u) => u.email).join(", "),
+  );
 }
 
 main()

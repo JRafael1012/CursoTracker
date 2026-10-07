@@ -16,7 +16,7 @@ export async function saveAsignatura(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const user = await requireRole("ADMIN");
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR");
 
   const parsed = schema.safeParse({ nombre: formData.get("nombre") });
   if (!parsed.success) {
@@ -25,11 +25,11 @@ export async function saveAsignatura(
 
   try {
     await prisma.asignatura.create({
-      data: { centroId: user.centroId, nombre: parsed.data.nombre },
+      data: { centroId: user.centroId!, nombre: parsed.data.nombre },
     });
     await logAudit({
-      centroId: user.centroId,
-      usuarioId: Number(user.id),
+      centroId: user.centroId!,
+      usuarioId: user.id,
       accion: "CREATE",
       entidad: "Asignatura",
     });
@@ -42,21 +42,21 @@ export async function saveAsignatura(
 }
 
 export async function deleteAsignatura(formData: FormData) {
-  const user = await requireRole("ADMIN");
-  const id = Number(formData.get("id"));
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR");
+  const id = String(formData.get("id") ?? "");
   if (!id) return;
 
   try {
-    await prisma.asignatura.delete({ where: { id, centroId: user.centroId } });
+    await prisma.asignatura.delete({ where: { id, centroId: user.centroId! } });
     await logAudit({
-      centroId: user.centroId,
-      usuarioId: Number(user.id),
+      centroId: user.centroId!,
+      usuarioId: user.id,
       accion: "DELETE",
       entidad: "Asignatura",
       entidadId: id,
     });
   } catch {
-    // FK restrict: la asignatura tiene notas/docentes
+    // FK restrict: la asignatura ya tiene notas
   }
   revalidatePath("/panel/asignaturas");
 }

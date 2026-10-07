@@ -7,9 +7,9 @@ import { requireRole } from "@/lib/modules/auth/session";
 import { logAudit } from "@/lib/modules/audit";
 
 const schema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.string().optional(),
   nombre: z.string().trim().min(2, "Nombre demasiado corto"),
-  nivel: z.string().trim().default(""),
+  nivel: z.string().trim().optional(),
 });
 
 export type FormState = { error?: string; ok?: boolean };
@@ -18,12 +18,12 @@ export async function saveCurso(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const user = await requireRole("ADMIN", "DOCENTE");
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR", "DOCENTE");
 
   const parsed = schema.safeParse({
     id: formData.get("id") || undefined,
     nombre: formData.get("nombre"),
-    nivel: formData.get("nivel") || "",
+    nivel: formData.get("nivel") ?? "",
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message };
@@ -34,29 +34,29 @@ export async function saveCurso(
   try {
     if (id) {
       await prisma.curso.update({
-        where: { id, centroId: user.centroId },
-        data: { nombre, nivel },
+        where: { id, centroId: user.centroId! },
+        data: { nombre, nivel: nivel ?? "" },
       });
       await logAudit({
-        centroId: user.centroId,
-        usuarioId: Number(user.id),
+        centroId: user.centroId!,
+        usuarioId: user.id,
         accion: "UPDATE",
         entidad: "Curso",
         entidadId: id,
       });
     } else {
       await prisma.curso.create({
-        data: { centroId: user.centroId, nombre, nivel },
+        data: { centroId: user.centroId!, nombre, nivel: nivel ?? "" },
       });
       await logAudit({
-        centroId: user.centroId,
-        usuarioId: Number(user.id),
+        centroId: user.centroId!,
+        usuarioId: user.id,
         accion: "CREATE",
         entidad: "Curso",
       });
     }
   } catch {
-    return { error: "No se pudo guardar: ¿curso duplicado en el centro?" };
+    return { error: "No se pudo guardar: ¿curso duplicado?" };
   }
 
   revalidatePath("/panel/cursos");
@@ -64,15 +64,15 @@ export async function saveCurso(
 }
 
 export async function deleteCurso(formData: FormData) {
-  const user = await requireRole("ADMIN");
-  const id = Number(formData.get("id"));
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR");
+  const id = String(formData.get("id") ?? "");
   if (!id) return;
 
   try {
-    await prisma.curso.delete({ where: { id, centroId: user.centroId } });
+    await prisma.curso.delete({ where: { id, centroId: user.centroId! } });
     await logAudit({
-      centroId: user.centroId,
-      usuarioId: Number(user.id),
+      centroId: user.centroId!,
+      usuarioId: user.id,
       accion: "DELETE",
       entidad: "Curso",
       entidadId: id,

@@ -19,21 +19,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const parsed = credentialsSchema.safeParse(raw);
         if (!parsed.success) return null;
 
-        const { email, password } = parsed.data;
-        const user = await prisma.usuario.findFirst({
-          where: { email, estado: "activo" },
-        });
-        if (!user) return null;
+const { email, password } = parsed.data;
+        const user = await prisma.usuario.findUnique({ where: { email } });
+        if (!user || user.estado !== "activo") return null;
 
         const ok = await compare(password, user.passwordHash);
         if (!ok) return null;
 
         return {
-          id: String(user.id),
-          name: user.nombre,
-          email: user.email,
-          rol: user.rol,
+          id: user.id,
           centroId: user.centroId,
+          rol: user.rol,
+          name: [user.nombre, user.apellido].filter(Boolean).join(" "),
+          email: user.email,
         };
       },
     }),
@@ -43,14 +41,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = user.id;
         token.rol = (user as { rol: string }).rol;
-        token.centroId = (user as { centroId: number }).centroId;
+        token.centroId = (user as { centroId: string | null }).centroId;
       }
       return token;
     },
     session({ session, token }) {
       session.user.id = token.id as string;
       session.user.rol = token.rol as string;
-      session.user.centroId = token.centroId as number;
+      session.user.centroId = (token.centroId as string | null) ?? null;
       return session;
     },
   },

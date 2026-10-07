@@ -1,21 +1,29 @@
 import { redirect } from "next/navigation";
 import { auth } from "./index";
+import type { Rol } from "@prisma/client";
 
 export type SessionUser = {
   id: string;
-  rol: string;
-  centroId: number;
+  rol: Rol;
+  centroId: string | null;
   name?: string | null;
   email?: string | null;
 };
 
 export async function requireUser(): Promise<SessionUser> {
   const session = await auth();
-  if (!session?.user) redirect("/login");
-  return session.user;
+  const user = session?.user;
+  if (!user) redirect("/login");
+  return {
+    id: user.id,
+    rol: user.rol as Rol,
+    centroId: user.centroId,
+    name: user.name,
+    email: user.email,
+  };
 }
 
-export async function requireRole(...roles: string[]): Promise<SessionUser> {
+export async function requireRole(...roles: Rol[]): Promise<SessionUser> {
   const user = await requireUser();
   if (!roles.includes(user.rol)) redirect("/panel");
   return user;

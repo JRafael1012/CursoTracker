@@ -4,10 +4,10 @@ import { deletePeriodo } from "@/lib/modules/periodos/actions";
 import { PeriodoForm } from "./form";
 
 export default async function PeriodosPage() {
-  const user = await requireRole("ADMIN", "DOCENTE");
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR");
 
   const periodos = await prisma.periodo.findMany({
-    where: { centroId: user.centroId },
+    where: { centroId: user.centroId ?? "" },
     orderBy: { fechaInicio: "asc" },
     include: { _count: { select: { notas: true, matriculas: true } } },
   });

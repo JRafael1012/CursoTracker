@@ -13,6 +13,9 @@ type NavItem = {
   roles?: string[];
 };
 
+const ACADEMICO = ["RECTOR", "ADMIN", "COORDINADOR", "DOCENTE"];
+const DIRECTIVO = ["RECTOR", "ADMIN", "COORDINADOR"];
+
 const NAV: { label: string; items: NavItem[] }[] = [
   {
     label: "MENÚ PRINCIPAL",
@@ -22,20 +25,20 @@ const NAV: { label: string; items: NavItem[] }[] = [
         href: "/panel/estudiantes",
         label: "Estudiantes",
         icon: "students",
-        roles: ["ADMIN", "DOCENTE"],
+        roles: ACADEMICO,
       },
       { href: "/panel/cursos", label: "Cursos", icon: "book" },
       {
         href: "/panel/asignaturas",
         label: "Asignaturas",
         icon: "chart",
-        roles: ["ADMIN", "DOCENTE"],
+        roles: ACADEMICO,
       },
       {
         href: "/panel/periodos",
         label: "Períodos",
         icon: "calendar",
-        roles: ["ADMIN", "DOCENTE"],
+        roles: DIRECTIVO,
       },
     ],
   },
@@ -46,14 +49,17 @@ const NAV: { label: string; items: NavItem[] }[] = [
         href: "/panel/usuarios",
         label: "Usuarios",
         icon: "settings",
-        roles: ["ADMIN"],
+        roles: ["RECTOR", "ADMIN"],
       },
     ],
   },
 ];
 
 const ROL_LABEL: Record<string, string> = {
-  ADMIN: "Rector / Administrador",
+  SUPERADMIN: "SuperAdministrador",
+  RECTOR: "Rector(a)",
+  ADMIN: "Administrador",
+  COORDINADOR: "Coordinador(a)",
   DOCENTE: "Docente",
   ESTUDIANTE: "Estudiante",
   PADRE: "Acudiente",

@@ -8,28 +8,40 @@ export default async function EstudiantesPage({
 }: {
   searchParams: Promise<{ editar?: string }>;
 }) {
-  const user = await requireRole("ADMIN", "DOCENTE");
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR", "DOCENTE");
+  const centroId = user.centroId ?? "";
   const { editar } = await searchParams;
 
   const [estudiantes, editando] = await Promise.all([
     prisma.estudiante.findMany({
-      where: { centroId: user.centroId, estado: "activo" },
-      orderBy: { nombre: "asc" },
-      include: { _count: { select: { matriculas: true, notas: true } } },
+      where: { centroId, estado: "activo" },
+      orderBy: { createdAt: "asc" },
+      include: {
+        usuario: { select: { nombre: true, apellido: true, email: true } },
+        _count: { select: { matriculas: true, notas: true } },
+      },
     }),
     editar
       ? prisma.estudiante.findFirst({
-          where: { id: Number(editar), centroId: user.centroId },
+          where: { id: editar, centroId },
+          include: { usuario: true },
         })
       : null,
   ]);
+
+  const nombreCompleto = (nombre: string, apellido: string) =>
+    [nombre, apellido].filter(Boolean).join(" ");
 
   return (
     <div className="page">
       <section className="welcome">
         <div>
           <p className="eyebrow">GESTIÓN ACADÉMICA</p>
-          <h1>{editando ? `Editar: ${editando.nombre}` : "Estudiantes"}</h1>
+          <h1>
+            {editando
+              ? `Editar: ${nombreCompleto(editando.usuario.nombre, editando.usuario.apellido)}`
+              : "Estudiantes"}
+          </h1>
           <p>{estudiantes.length} estudiantes activos en el centro.</p>
         </div>
       </section>
@@ -41,7 +53,9 @@ export default async function EstudiantesPage({
             editando
               ? {
                   id: editando.id,
-                  nombre: editando.nombre,
+                  nombre: editando.usuario.nombre,
+                  apellido: editando.usuario.apellido,
+                  email: editando.usuario.email,
                   documento: editando.documento,
                 }
               : {}
@@ -62,6 +76,7 @@ export default async function EstudiantesPage({
           <thead>
             <tr>
               <th>Nombre</th>
+              <th>Correo</th>
               <th>Documento</th>
               <th>Cursos</th>
               <th>Notas</th>
@@ -71,7 +86,7 @@ export default async function EstudiantesPage({
           <tbody>
             {estudiantes.length === 0 ? (
               <tr>
-                <td colSpan={5} className="empty-note">
+                <td colSpan={6} className="empty-note">
                   Sin estudiantes aún. Agrega el primero arriba.
                 </td>
               </tr>
@@ -79,8 +94,11 @@ export default async function EstudiantesPage({
               estudiantes.map((e) => (
                 <tr key={e.id}>
                   <td>
-                    <span className="font-medium">{e.nombre}</span>
+                    <span className="font-medium">
+                      {nombreCompleto(e.usuario.nombre, e.usuario.apellido)}
+                    </span>
                   </td>
+                  <td className="text-muted">{e.usuario.email}</td>
                   <td className="text-muted">{e.documento}</td>
                   <td>{e._count.matriculas}</td>
                   <td>{e._count.notas}</td>

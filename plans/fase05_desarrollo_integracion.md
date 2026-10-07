@@ -30,13 +30,15 @@ transporte, votaciones) — ver `docs/roles.md`.
 
 ## Hitos (M3..M7)
 
-- **M3 Modelo v2 + roles.** Migrar schema a UUID; `Usuario.centroId` nullable
-  (SuperAdmin) y `email` único global; `+apellido`; enum `SUPERADMIN/RECTOR/
-  ADMIN/COORDINADOR/DOCENTE/ESTUDIANTE/PADRE`; unificar Estudiante↔Usuario;
-  `EstudiantePadre`; renombrar `AsignaturaDocente`→`CursoAsignaturaDocente`;
-  `Nota → CursoAsignaturaDocente`; `AuditLog +descripcion/ip`; reescribir seed
-  (2 centros para pruebas de aislamiento) y sesión (`centroId` nullable, `roles`).
-  *Aceptación:* `prisma migrate` OK, `tsc`/`eslint` limpios, login de los 4 roles demo.
+- **M3 Modelo v2 + roles.** ✅ (2026-10-07) Migrado el schema a UUID; `Usuario.centroId`
+  nullable (SuperAdmin) y `email` único global; `+apellido`; enum `SUPERADMIN/RECTOR/
+  ADMIN/COORDINADOR/DOCENTE/ESTUDIANTE/PADRE`; Estudiante = Usuario + perfil;
+  `EstudiantePadre`; `AsignaturaDocente`→`CursoAsignaturaDocente`; `Nota →
+  CursoAsignaturaDocente`; `AuditLog +descripcion/ip`. Migración `init_v2` aplicada,
+  seed con 2 centros, sesión con `centroId` nullable. Evidencia: `tsc`/`eslint` 0;
+  login de los 4 roles demo → `/panel` 200; docente/estudiante bloqueados en
+  períodos/usuarios; **aislamiento multi-tenant** verificado (admin@norte solo ve
+  Colegio Norte y 0 estudiantes de demo).
 - **M4 Configuración de calificación (D1+D2).** Módulo `lib/modules/config` +
   vista para el rector; config por centro (escala y cortes).
   *Aceptación:* el rector cambia escala/cortes y se persiste por `centroId`.

@@ -4,6 +4,7 @@ import { toggleUsuario } from "@/lib/modules/usuarios/actions";
 import { UsuarioForm } from "./form";
 
 const ROL_LABEL: Record<string, string> = {
+  SUPERADMIN: "Superadministrador",
   RECTOR: "Rector(a)",
   COORDINADOR: "Coordinador(a)",
   ADMIN: "Administrador",
@@ -17,17 +18,17 @@ export default async function UsuariosPage({
 }: {
   searchParams: Promise<{ editar?: string }>;
 }) {
-  const admin = await requireRole("ADMIN");
+  const admin = await requireRole("RECTOR", "ADMIN");
   const { editar } = await searchParams;
 
   const [usuarios, editando] = await Promise.all([
     prisma.usuario.findMany({
-      where: { centroId: admin.centroId },
+      where: { centroId: admin.centroId ?? "" },
       orderBy: { nombre: "asc" },
     }),
     editar
       ? prisma.usuario.findFirst({
-          where: { id: Number(editar), centroId: admin.centroId },
+          where: { id: editar, centroId: admin.centroId ?? "" },
         })
       : null,
   ]);
@@ -50,6 +51,7 @@ export default async function UsuariosPage({
               ? {
                   id: editando.id,
                   nombre: editando.nombre,
+                  apellido: editando.apellido,
                   email: editando.email,
                   rol: editando.rol,
                 }
@@ -95,7 +97,7 @@ export default async function UsuariosPage({
                   </span>
                 </td>
                 <td className="text-right">
-                  {u.id === Number(admin.id) ? (
+                  {u.id === admin.id ? (
                     <span className="text-muted">(tú)</span>
                   ) : (
                     <>

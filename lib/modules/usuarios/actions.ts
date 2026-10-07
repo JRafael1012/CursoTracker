@@ -7,12 +7,20 @@ import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/modules/auth/session";
 import { logAudit } from "@/lib/modules/audit";
 
-const ROLES = ["ADMIN", "DOCENTE", "ESTUDIANTE", "PADRE"] as const;
+const ROLES = [
+  "RECTOR",
+  "ADMIN",
+  "COORDINADOR",
+  "DOCENTE",
+  "ESTUDIANTE",
+  "PADRE",
+] as const;
 
 const schema = z
   .object({
-    id: z.coerce.number().optional(),
+    id: z.string().optional(),
     nombre: z.string().trim().min(2, "Nombre requerido"),
+    apellido: z.string().trim().optional(),
     email: z.string().trim().email("Correo inválido"),
     password: z.string(),
     rol: z.enum(ROLES),
@@ -40,35 +48,38 @@ export async function saveUsuario(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const admin = await requireRole("ADMIN");
+  const admin = await requireRole("RECTOR", "ADMIN");
 
   const parsed = schema.safeParse({
     id: formData.get("id") || undefined,
     nombre: formData.get("nombre"),
+    apellido: formData.get("apellido") ?? "",
     email: formData.get("email"),
-    password: formData.get("password"),
+    password: formData.get("password") ?? "",
     rol: formData.get("rol"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message };
   }
 
-  const { id, nombre, email, password, rol } = parsed.data;
+  const { id, nombre, apellido, email, password, rol } = parsed.data;
+  const centroId = admin.centroId!;
 
   try {
     if (id) {
       await prisma.usuario.update({
-        where: { id, centroId: admin.centroId },
+        where: { id, centroId },
         data: {
           nombre,
+          apellido: apellido ?? "",
           email,
           rol,
           passwordHash: password ? await hash(password, 10) : undefined,
         },
       });
       await logAudit({
-        centroId: admin.centroId,
-        usuarioId: Number(admin.id),
+        centroId,
+        usuarioId: admin.id,
         accion: "UPDATE",
         entidad: "Usuario",
         entidadId: id,
@@ -76,16 +87,17 @@ export async function saveUsuario(
     } else {
       await prisma.usuario.create({
         data: {
-          centroId: admin.centroId,
+          centroId,
           nombre,
+          apellido: apellido ?? "",
           email,
           rol,
           passwordHash: await hash(password, 10),
         },
       });
       await logAudit({
-        centroId: admin.centroId,
-        usuarioId: Number(admin.id),
+        centroId,
+        usuarioId: admin.id,
         accion: "CREATE",
         entidad: "Usuario",
       });
@@ -99,18 +111,18 @@ export async function saveUsuario(
 }
 
 export async function toggleUsuario(formData: FormData) {
-  const admin = await requireRole("ADMIN");
-  const id = Number(formData.get("id"));
+  const admin = await requireRole("RECTOR", "ADMIN");
+  const id = String(formData.get("id") ?? "");
   const estado = String(formData.get("estado"));
-  if (!id || id === Number(admin.id)) return;
+  if (!id || id === admin.id) return;
 
   await prisma.usuario.update({
-    where: { id, centroId: admin.centroId },
+    where: { id, centroId: admin.centroId! },
     data: { estado: estado === "activo" ? "inactivo" : "activo" },
   });
   await logAudit({
-    centroId: admin.centroId,
-    usuarioId: Number(admin.id),
+    centroId: admin.centroId!,
+    usuarioId: admin.id,
     accion: estado === "activo" ? "SUSPENDER" : "REACTIVAR",
     entidad: "Usuario",
     entidadId: id,

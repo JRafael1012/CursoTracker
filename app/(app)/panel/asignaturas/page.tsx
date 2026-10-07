@@ -4,13 +4,13 @@ import { deleteAsignatura } from "@/lib/modules/asignaturas/actions";
 import { AsignaturaForm } from "./form";
 
 export default async function AsignaturasPage() {
-  const user = await requireRole("ADMIN", "DOCENTE");
+  const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR", "DOCENTE");
 
   const asignaturas = await prisma.asignatura.findMany({
-    where: { centroId: user.centroId },
+    where: { centroId: user.centroId ?? "" },
     orderBy: { nombre: "asc" },
     include: {
-      _count: { select: { docentes: true, notas: true, cronogramas: true } },
+      _count: { select: { cursoAsignaturas: true, cronogramas: true } },
     },
   });
 
@@ -33,8 +33,7 @@ export default async function AsignaturasPage() {
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Docentes asignados</th>
-              <th>Notas</th>
+              <th>Asignaciones</th>
               <th>Cronogramas</th>
               <th className="text-right">Acciones</th>
             </tr>
@@ -42,7 +41,7 @@ export default async function AsignaturasPage() {
           <tbody>
             {asignaturas.length === 0 ? (
               <tr>
-                <td colSpan={5} className="empty-note">
+                <td colSpan={4} className="empty-note">
                   Sin asignaturas aún.
                 </td>
               </tr>
@@ -52,8 +51,7 @@ export default async function AsignaturasPage() {
                   <td>
                     <span className="font-medium">{a.nombre}</span>
                   </td>
-                  <td>{a._count.docentes}</td>
-                  <td>{a._count.notas}</td>
+                  <td>{a._count.cursoAsignaturas}</td>
                   <td>{a._count.cronogramas}</td>
                   <td className="text-right">
                     <form action={deleteAsignatura} className="inline">

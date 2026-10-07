@@ -70,12 +70,22 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - [x] Fase 02 — Descubrimiento y requisitos (`docs/requirements.md`, vivo)
 - [x] Fase 03 — Arquitectura y diseño (`docs/architecture.md`, `docs/data-model.md`)
 - [x] Fase 04 — Planificación y preparación (`plans/fase04_planificacion_preparacion.md`)
-- [ ] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`)
+- [ ] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`) · M3 hecho
 
 ## Estado
 
 - Hecho: M0 entorno · M1 modelo+auth (multi-tenant, roles, sesión JWT) ·
   M2 CRUDs (estudiantes, cursos, períodos, asignaturas, usuarios) · diseño
-  portado a Tailwind (shell, dashboard con datos reales, login).
-- En curso: **modelo v2** (UUID, roles extendidos, `EstudiantePadre`,
-  `CursoAsignaturaDocente`, notas) y módulos de Fase A.
+  portado a Tailwind (shell, dashboard con datos reales, login) · **M3 modelo v2**
+  (UUID; roles `SUPERADMIN/RECTOR/ADMIN/COORDINADOR/DOCENTE/ESTUDIANTE/PADRE`;
+  `Estudiante`=Usuario + `EstudiantePadre`; `CursoAsignaturaDocente`; `AuditLog`
+  con `descripcion`/`ip`; sesión con `centroId` nullable; seed con 2 centros).
+- Verificado: `tsc`/`eslint` 0; login de los 4 roles demo → `/panel` 200; permisos
+  por rol aplicados; aislamiento multi-tenant (cada centro solo ve lo suyo).
+- Siguiente: M4 (config de calificación) y M5 (asignación académica + notas).
+
+## Credenciales demo (centro "Colegio Norte")
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| Rector | `admin@norte.com` | `Norte123!` |

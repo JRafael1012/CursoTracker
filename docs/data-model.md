@@ -73,11 +73,10 @@ consultar** desde Nota, evitando duplicación.
 - FKs con `ON DELETE RESTRICT` en datos académicos (trazabilidad).
 - Todo listado filtrado por `centroId` de sesión.
 
-## Modelo objetivo v2 (aprobado 2026-10-07 · pendiente de implementar)
+## Modelo objetivo v2 (implementado 2026-10-07)
 
 Esbozado por el usuario y aprobado en sus 4 decisiones. Roles: `docs/roles.md`.
-Diferencias frente al modelo actual (implementar en Fase 05 — ver
-`plans/fase05_desarrollo_integracion.md`):
+Estado: **implementado** (migración `init_v2`, ver `plans/fase05_desarrollo_integracion.md`).
 
 **Decisiones aprobadas:** D5 = PK **UUID** en todas las tablas; D6 = **Estudiante = Usuario**
 (rol `ESTUDIANTE`) + perfil `Estudiante`; D7 = **enum de roles** extendido (sin tablas RBAC);

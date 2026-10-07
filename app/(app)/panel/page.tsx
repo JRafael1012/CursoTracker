@@ -4,10 +4,13 @@ import { requireUser } from "@/lib/modules/auth/session";
 import { Icon } from "@/components/icon";
 
 const ROL_LABEL: Record<string, string> = {
+  SUPERADMIN: "Superadministrador",
+  RECTOR: "Rector(a)",
   ADMIN: "Administrador",
+  COORDINADOR: "Coordinador(a)",
   DOCENTE: "Docente",
   ESTUDIANTE: "Estudiante",
-  PADRE: "Padre/Acudiente",
+  PADRE: "Acudiente",
 };
 
 function saludo(hora: number) {
@@ -27,7 +30,7 @@ function fechaLarga(d: Date) {
 
 export default async function PanelPage() {
   const user = await requireUser();
-  const centroId = user.centroId;
+  const centroId = user.centroId ?? "";
 
   const [
     estudiantes,
@@ -61,10 +64,15 @@ export default async function PanelPage() {
       orderBy: { nombre: "asc" },
       take: 4,
       include: {
-        _count: { select: { matriculas: true, notas: true } },
+        _count: { select: { matriculas: true, cursoAsignaturas: true } },
       },
     }),
   ]);
+
+  const maxAsignaciones = Math.max(
+    1,
+    ...conteoCursos.map((c) => c._count.cursoAsignaturas),
+  );
 
   const listaPeriodos = await prisma.periodo.findMany({
     where: { centroId, id: { in: porPeriodo.map((p) => p.periodoId) } },
@@ -259,9 +267,11 @@ export default async function PanelPage() {
             <div>
               <span>
                 <i className="dot red" />
-                Cursos s/ nota
+                Cursos s/ asignación
               </span>
-              <b>{conteoCursos.filter((c) => c._count.notas === 0).length}</b>
+              <b>
+                {conteoCursos.filter((c) => c._count.cursoAsignaturas === 0).length}
+              </b>
             </div>
           </div>
         </article>
@@ -287,9 +297,9 @@ export default async function PanelPage() {
                   | "blue"
                   | "indigo"
                   | "amber";
-                const avance = totalNotas
-                  ? Math.round((c._count.notas / totalNotas) * 100)
-                  : 0;
+                const avance = Math.round(
+                  (c._count.cursoAsignaturas / maxAsignaciones) * 100,
+                );
                 return (
                   <div className="course-row" key={c.id}>
                     <div className={`course-badge ${tono}`}>
@@ -304,7 +314,7 @@ export default async function PanelPage() {
                     </div>
                     <div className="course-progress">
                       <div>
-                        <span>Notas del centro</span>
+                        <span>Asignaciones</span>
                         <b>{avance}%</b>
                       </div>
                       <div className="progress-track">
