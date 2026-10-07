@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CursoTracker
 
-## Getting Started
+SaaS multi-tenant de gestión académica para colegios y academias.
 
-First, run the development server:
+## Propuesta de valor
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Automatiza la gestión de estudiantes, cursos y notas, y la generación de
+reportes y evidencias académicas en PDF/Excel, con una interfaz amigable y
+accesible desde cualquier dispositivo.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Objetivo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Desarrollar un SaaS multi-tenant para colegios y academias, que permita la
+gestión integral de estudiantes, cursos y notas, automatizando la generación
+de reportes y evidencias académicas en formato PDF/Excel, con una interfaz
+amigable y accesible desde cualquier dispositivo.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## MVP (v1)
 
-## Learn More
+- Gestión de estudiantes, cursos y notas.
+- Generación de reportes y evidencias en PDF/Excel.
+- Multi-tenant (colegios/academias como inquilinos).
+- Accesible desde cualquier dispositivo (web responsive).
 
-To learn more about Next.js, take a look at the following resources:
+## Perfil MIDEGS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Riguroso — datos sensibles de menores, múltiples usuarios, alto impacto.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Fases
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [x] Fase 01 — Dirección y viabilidad (`plans/fase01_direccion_viability.md`)
+- [x] Fase 02 — Descubrimiento y requisitos (`docs/requirements.md`, vivo: se amplía con nuevos requisitos)
+- [x] Fase 03 — Arquitectura y diseño (`docs/architecture.md`, `docs/data-model.md`)
+- [ ] Fase 04 — Planificación y preparación
