@@ -72,3 +72,21 @@ consultar** desde Nota, evitando duplicación.
 
 - FKs con `ON DELETE RESTRICT` en datos académicos (trazabilidad).
 - Todo listado filtrado por `centroId` de sesión.
+
+## Modelo objetivo v2 (propuesta, NO implementada)
+
+Esbozado por el usuario. Roles: `docs/roles.md`. Diferencias frente al modelo actual:
+
+1. **PK UUID** en lugar de `Int` autoincremental (todas las entidades).
+2. **Usuario**: `centroId` **nullable** (SuperAdmin global), `email` único **global**
+   (hoy `[centroId, email]`), + `apellido`, `rol` ampliado (`SUPERADMIN`, `RECTOR/ADMIN`,
+   `COORDINADOR`, `DOCENTE`, `ESTUDIANTE`, `PADRE`…).
+3. **Estudiante como Usuario** (rol `ESTUDIANTE`): hoy es tabla propia; unificarlo o mantenerlas separadas es decisión pendiente.
+4. **`EstudiantePadre`** (N:M acudiente↔estudiante): nueva; habilita multi-hijo (hoy no existe).
+5. **`CursoAsignaturaDocente`**: equivalente a `AsignaturaDocente` (mismo UK `[curso, asignatura, docente]`); solo cambia el nombre.
+6. **Nota** colgando de `CursoAsignaturaDocente` (una FK) en lugar de 3 FK sueltas
+   (`asignaturaId`, `cursoId`, `docenteId`) — garantiza consistencia de matrícula.
+
+Resumen de entidades del esbozo:
+- `Centro` (tenant), `Usuario` (RBAC multi-tenant), `EstudiantePadre` (N:M),
+  `CursoAsignaturaDocente` (pivote académica), `AuditLog` (+ `descripcion`, `ip`).
