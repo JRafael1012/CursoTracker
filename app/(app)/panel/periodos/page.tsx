@@ -4,55 +4,73 @@ import { deletePeriodo } from "@/lib/modules/periodos/actions";
 import { PeriodoForm } from "./form";
 
 export default async function PeriodosPage() {
-  const user = await requireRole("ADMIN");
+  const user = await requireRole("ADMIN", "DOCENTE");
 
   const periodos = await prisma.periodo.findMany({
     where: { centroId: user.centroId },
-    orderBy: { fechaInicio: "desc" },
-    include: { _count: { select: { notas: true } } },
+    orderBy: { fechaInicio: "asc" },
+    include: { _count: { select: { notas: true, matriculas: true } } },
   });
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-lg border border-border bg-card p-6">
-        <h1 className="mb-4 text-xl font-bold text-text">Períodos académicos</h1>
+    <div className="page">
+      <section className="welcome">
+        <div>
+          <p className="eyebrow">GESTIÓN ACADÉMICA</p>
+          <h1>Períodos</h1>
+          <p>{periodos.length} períodos definidos en el centro.</p>
+        </div>
+      </section>
+
+      <section className="data-card mb-[15px]">
         <PeriodoForm />
       </section>
 
-      <section className="rounded-lg border border-border bg-card p-6">
-        <table className="w-full text-sm">
+      <section className="data-card">
+        <table className="data-table">
           <thead>
-            <tr className="border-b border-border text-left text-text-sec">
-              <th className="py-2">Nombre</th>
-              <th className="py-2">Inicio</th>
-              <th className="py-2">Fin</th>
-              <th className="py-2">Notas cargadas</th>
-              <th className="py-2 text-right">Acciones</th>
+            <tr>
+              <th>Nombre</th>
+              <th>Inicio</th>
+              <th>Fin</th>
+              <th>Matrículas</th>
+              <th>Notas</th>
+              <th className="text-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {periodos.length === 0 ? (
               <tr>
-                <td colSpan={4} className="py-4 text-text-sec">
+                <td colSpan={6} className="empty-note">
                   Sin períodos aún.
                 </td>
               </tr>
             ) : (
               periodos.map((p) => (
-                <tr key={p.id} className="border-b border-border text-text">
-                  <td className="py-2">{p.nombre}</td>
-                  <td className="py-2">
-                    {p.fechaInicio.toLocaleDateString("es")}
+                <tr key={p.id}>
+                  <td>
+                    <span className="font-medium">{p.nombre}</span>
                   </td>
-                  <td className="py-2">{p.fechaFin.toLocaleDateString("es")}</td>
-                  <td className="py-2">{p._count.notas}</td>
-                  <td className="py-2 text-right">
+                  <td className="text-muted">
+                    {new Intl.DateTimeFormat("es", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }).format(p.fechaInicio)}
+                  </td>
+                  <td className="text-muted">
+                    {new Intl.DateTimeFormat("es", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }).format(p.fechaFin)}
+                  </td>
+                  <td>{p._count.matriculas}</td>
+                  <td>{p._count.notas}</td>
+                  <td className="text-right">
                     <form action={deletePeriodo} className="inline">
                       <input type="hidden" name="id" value={p.id} />
-                      <button
-                        type="submit"
-                        className="rounded-md border border-border px-2 py-1 text-danger hover:bg-danger/10"
-                      >
+                      <button type="submit" className="chip-button-danger">
                         Eliminar
                       </button>
                     </form>

@@ -37,7 +37,7 @@ export function UsuarioForm({
           placeholder="Nombre completo"
           defaultValue={initial?.nombre ?? ""}
           required
-          className="rounded-md border border-border px-3 py-2 text-text outline-none focus:border-primary"
+          className="field-input"
         />
         <input
           name="email"
@@ -45,7 +45,7 @@ export function UsuarioForm({
           placeholder="Correo"
           defaultValue={initial?.email ?? ""}
           required
-          className="rounded-md border border-border px-3 py-2 text-text outline-none focus:border-primary"
+          className="field-input"
         />
         <input
           name="password"
@@ -57,13 +57,13 @@ export function UsuarioForm({
           }
           required={!initial?.id}
           minLength={initial?.id ? undefined : 6}
-          className="rounded-md border border-border px-3 py-2 text-text outline-none focus:border-primary"
+          className="field-input"
         />
         <select
           name="rol"
           required
           defaultValue={initial?.rol ?? "DOCENTE"}
-          className="rounded-md border border-border bg-card px-3 py-2 text-text outline-none focus:border-primary"
+          className="field-input"
         >
           <option value="ADMIN">Administrador</option>
           <option value="DOCENTE">Docente</option>
@@ -72,16 +72,12 @@ export function UsuarioForm({
         </select>
       </div>
       {state.error ? (
-        <p className="text-sm text-danger">{state.error}</p>
+        <p className="text-[12px] text-danger">{state.error}</p>
       ) : null}
       {state.ok ? (
-        <p className="text-sm text-success">Usuario guardado</p>
+        <p className="text-[12px] text-success">Usuario guardado</p>
       ) : null}
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark disabled:opacity-60"
-      >
+      <button type="submit" disabled={pending} className="primary-button">
         {pending ? "Guardando…" : "Crear usuario"}
       </button>
     </form>
