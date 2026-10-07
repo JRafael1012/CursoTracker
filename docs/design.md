@@ -5,7 +5,7 @@ Fuente única de tokens de color para todo el SaaS.
 ## Logotipo (assets)
 
 - Original: `public/logo/logo.jpeg` (1408×768, solo fuente).
-- Recortado (UI): `public/logo/logor.png` — **fondo transparente**, usado en login y cabecera. Respaldo sin transparencia: `logor-original.png`.
+- Recortado (UI): `public/logo/logor.png` — **fondo transparente**, usado en login y cabecera.
 - Favicon/iconos: `app/favicon.ico`, `app/icon.png` (transparentes), `app/apple-icon.png` (fondo blanco).
 - Regenerar: `& "$env:TEMP\opencode\transparent.ps1"`.
 

@@ -85,9 +85,12 @@ Cafetería · Transporte · Votaciones/Actas · Comunicados · Relación acudien
 - **Fase B:** Coordinador de Convivencia, Docente de Inclusión (NEE), Psicólogo, Enfermero, Auxiliar de Cátedra, Jefe de Departamento.
 - **Fase C:** Biblioteca, Laboratorio, Contador, Admisiones, Logística, Cafetería, Transporte, Consejo Directivo.
 
-## Decisiones pendientes
+## Decisiones
 
-- D5: ¿`enum` extendido o tablas RBAC? (recomendado: RBAC con permisos).
-- D6: ¿`centroId` nullable + rol global para SuperAdmin? (necesario para nivel 1).
-- D7: Confirmar la Fase A como alcance del MVP.
-- D8: Multi-rol por usuario (recomendado: sí).
+Resueltas (2026-10-07): **enum de roles extendido** (sin tablas RBAC) y **estudiante = Usuario**.
+Numeración canónica en `docs/data-model.md` (Modelo objetivo v2).
+
+Pendientes:
+- P1: `centroId` **nullable** + rol global `SUPERADMIN` (necesario para el nivel 1).
+- D9: Confirmar la **Fase A** como alcance del MVP (SuperAdmin, Rector, Coordinador Académico, Docente + Director de Grupo, Estudiante, Padre, Secretario).
+- D10: Multi-rol por usuario (recomendado: sí) — el enum actual asume 1 rol por usuario.

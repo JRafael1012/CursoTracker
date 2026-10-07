@@ -30,9 +30,15 @@ tareas ordenadas, hitos y entorno listo antes de escribir código (Fase 05).
   (`AuditLog`) en toda escritura; validación Zod. Evidencia HTTP: admin → 200
   en las 5 secciones; docente → 307 bloqueado en períodos/asignaturas/usuarios;
   raíz `/` redirige al login; `tsc` y `eslint` limpios.
-- **M3 Notas**: carga manual de notas por docente con validación y auditoría.
-- **M4 Reportes**: boletines, listados, estadísticas y cronogramas (PDF/Excel) + evidencias.
-- **M5 Endurecimiento**: permisos entre roles, pruebas e2e, accesibilidad, backup `mysqldump`.
+- **M3..M7**: código de Fase 05 — modelo v2+roles, config de calificación,
+  notas/asistencia, reportes y despliegue. Ver `plans/fase05_desarrollo_integracion.md`.
+
+## Registro de decisiones (ampliación 2026-10-07)
+
+- D5: PK **UUID** en todas las tablas. D6: **Estudiante = Usuario** + `EstudiantePadre`.
+- D7: **enum de roles** extendido. D8: `Nota` → `CursoAsignaturaDocente`.
+- D1/D2: escala y cortes **configurables por el rector**. D3: `COORDINADOR` gestiona lo académico.
+- Taxonomía completa (~25 roles) y fases: `docs/roles.md`; roadmap: `docs/ideas.md`.
 
 ## Alcance
 
