@@ -35,6 +35,12 @@ const NAV: { label: string; items: NavItem[] }[] = [
         roles: ACADEMICO,
       },
       {
+        href: "/panel/asignaciones",
+        label: "Asignaciones",
+        icon: "check",
+        roles: ACADEMICO,
+      },
+      {
         href: "/panel/periodos",
         label: "Períodos",
         icon: "calendar",

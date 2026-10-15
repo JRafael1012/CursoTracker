@@ -70,7 +70,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - [x] Fase 02 — Descubrimiento y requisitos (`docs/requirements.md`, vivo)
 - [x] Fase 03 — Arquitectura y diseño (`docs/architecture.md`, `docs/data-model.md`)
 - [x] Fase 04 — Planificación y preparación (`plans/fase04_planificacion_preparacion.md`)
-- [ ] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`) · M3+M4 hechos
+- [ ] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`) · M3+M4+M5a hechos
 
 ## Estado
 
@@ -82,11 +82,14 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
   con `descripcion`/`ip`; sesión con `centroId` nullable; seed con 2 centros) ·
   **M4 config de calificación** (`Centro.config`; módulo `lib/modules/config`;
   vista `/panel/configuracion` solo RECTOR/ADMIN: escala, nota de aprobación y
-  cortes por período).
+  cortes por período) · **M5a asignaciones** (módulo `lib/modules/asignaciones`;
+  vista `/panel/asignaciones`: docente↔asignatura↔curso, la gestionan
+  RECTOR/ADMIN/COORDINADOR).
 - Verificado: `tsc`/`eslint` 0; login de los 4 roles demo → `/panel` 200; permisos
   por rol aplicados; aislamiento multi-tenant (cada centro solo ve lo suyo);
-  config de calificación persiste por `centroId` (M4).
-- Siguiente: M5 (asignación académica + notas/asistencia).
+  config de calificación persiste por `centroId` (M4); en asignaciones el
+  docente ve sin formulario y el estudiante es redirigido (M5a).
+- Siguiente: M5b (carga de notas) y M5c (asistencia diaria).
 
 ## Credenciales demo (centro "Colegio Norte")
 
@@ -94,7 +97,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 |---|---|---|
 | Rector | `admin@norte.com` | `Norte123!` |
 
-## Credenciales demo (centro "Masura")
+## Credenciales demo (centro "Masuera")
 
 | Rol | Email | Contraseña |
 |---|---|---|

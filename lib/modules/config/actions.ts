@@ -6,13 +6,14 @@ import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/modules/auth/session";
 import { logAudit } from "@/lib/modules/audit";
 import { CORTES_MAX, ESCALAS, ESCALA_KEYS } from "./calificacion";
+import type { FormState } from "@/lib/modules/form";
 
 const schema = z.object({
   escala: z.enum(ESCALA_KEYS),
   notaAprobatoria: z.coerce.number(),
 });
 
-export type FormState = { error?: string; ok?: boolean };
+export type { FormState };
 
 export async function saveConfigCalificacion(
   _prev: FormState,

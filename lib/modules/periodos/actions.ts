@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/modules/auth/session";
 import { logAudit } from "@/lib/modules/audit";
+import type { FormState } from "@/lib/modules/form";
 
 const schema = z.object({
   nombre: z.string().trim().min(2, "Nombre requerido"),
@@ -12,7 +13,7 @@ const schema = z.object({
   fechaFin: z.string().min(1, "Fecha de fin requerida"),
 });
 
-export type FormState = { error?: string; ok?: boolean };
+export type { FormState };
 
 export async function savePeriodo(
   _prev: FormState,

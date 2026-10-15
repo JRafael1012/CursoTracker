@@ -7,6 +7,7 @@ import { Rol } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/modules/auth/session";
 import { logAudit } from "@/lib/modules/audit";
+import type { FormState } from "@/lib/modules/form";
 
 const schema = z
   .object({
@@ -34,7 +35,7 @@ const schema = z
     }
   });
 
-export type FormState = { error?: string; ok?: boolean };
+export type { FormState };
 
 export async function saveEstudiante(
   _prev: FormState,

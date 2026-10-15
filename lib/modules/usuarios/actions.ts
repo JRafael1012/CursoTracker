@@ -6,6 +6,7 @@ import { hash } from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/modules/auth/session";
 import { logAudit } from "@/lib/modules/audit";
+import type { FormState } from "@/lib/modules/form";
 
 const ROLES = [
   "RECTOR",
@@ -42,7 +43,7 @@ const schema = z
     }
   });
 
-export type FormState = { error?: string; ok?: boolean };
+export type { FormState };
 
 export async function saveUsuario(
   _prev: FormState,

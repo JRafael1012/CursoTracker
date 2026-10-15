@@ -19,6 +19,9 @@ roles, hasta el MVP (Fase A). Requisitos: `docs/requirements.md`. Modelo:
 - D6: **Estudiante = Usuario** (rol `ESTUDIANTE`) + perfil `Estudiante`; `EstudiantePadre` (N:M multi-hijo).
 - D7: **Enum de roles** extendido (sin tablas RBAC) + mapa rol→permisos en código.
 - D8: `Nota` cuelga de **`CursoAsignaturaDocente`** (una FK).
+- D10 (2026-10-15, aprobada): la asignación docente↔asignatura↔curso usa
+  `CursoAsignaturaDocente` (única por la terna); un curso puede tener varios
+  docentes por asignatura. La gestionan RECTOR/ADMIN/COORDINADOR.
 
 ## Alcance
 
@@ -50,10 +53,18 @@ transporte, votaciones) — ver `docs/roles.md`.
   *Aceptación:* ✅ el rector de Masura (`ccolaura@yahoo.es`) carga la vista (HTTP
   200) y la config persiste por `centroId` (default → guardado → fallback ante
   datos corruptos). Evidencia: `tsc`/`eslint` 0.
-- **M5 Asignación académica + Notas y asistencia.** UI sobre
-  `CursoAsignaturaDocente` (qué docente dicta qué asignatura en cada curso);
-  endpoint de carga de notas con Zod y `AuditLog` automático; boletines por
-  cortes según D1/D2; asistencia diaria.
+- **M5a Asignación académica** (parte de M5). ✅ (2026-10-15) UI y acciones
+  sobre `CursoAsignaturaDocente` (qué docente dicta qué asignatura en cada
+  curso): módulo `lib/modules/asignaciones` (Zod + `AuditLog`; asigna/elimina
+  solo RECTOR/ADMIN/COORDINADOR) y vista `/panel/asignaciones` (ACADEMICO ve;
+  directivos gestionan). *Aceptación:* ✅ página HTTP 200 para rector y docente;
+  el docente la ve **sin** formulario; el estudiante es redirigido a `/panel`;
+  datos filtrados por `centroId`. Evidencia: `tsc`/`eslint` 0. (Además, el tipo
+  `FormState` —duplicado en 6 módulos— se unificó en `lib/modules/form.ts`.)
+- **M5b Carga de notas.** ⏳ Pendiente. Endpoint con Zod y `AuditLog`; **requiere
+  `corte` en `Nota`** (multicalificación por cortes, D2) y ajustar su índice único.
+- **M5c Asistencia diaria.** ⏳ Pendiente. **Requiere un nuevo modelo
+  `Asistencia`** (diseñar antes de codificar).
 - **M6 Reportes.** Excel (SheetJS) y PDF (`@react-pdf/renderer`) con pruebas de
   encoding (acentos/ñ); sábanas para docentes/directivos; boletines.
 - **M7 Despliegue y calidad.** Escucha en `0.0.0.0`; `mysqldump` diario **con
