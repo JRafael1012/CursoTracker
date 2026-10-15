@@ -70,7 +70,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - [x] Fase 02 — Descubrimiento y requisitos (`docs/requirements.md`, vivo)
 - [x] Fase 03 — Arquitectura y diseño (`docs/architecture.md`, `docs/data-model.md`)
 - [x] Fase 04 — Planificación y preparación (`plans/fase04_planificacion_preparacion.md`)
-- [ ] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`) · M3 hecho
+- [ ] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`) · M3+M4 hechos
 
 ## Estado
 
@@ -79,13 +79,23 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
   portado a Tailwind (shell, dashboard con datos reales, login) · **M3 modelo v2**
   (UUID; roles `SUPERADMIN/RECTOR/ADMIN/COORDINADOR/DOCENTE/ESTUDIANTE/PADRE`;
   `Estudiante`=Usuario + `EstudiantePadre`; `CursoAsignaturaDocente`; `AuditLog`
-  con `descripcion`/`ip`; sesión con `centroId` nullable; seed con 2 centros).
+  con `descripcion`/`ip`; sesión con `centroId` nullable; seed con 2 centros) ·
+  **M4 config de calificación** (`Centro.config`; módulo `lib/modules/config`;
+  vista `/panel/configuracion` solo RECTOR/ADMIN: escala, nota de aprobación y
+  cortes por período).
 - Verificado: `tsc`/`eslint` 0; login de los 4 roles demo → `/panel` 200; permisos
-  por rol aplicados; aislamiento multi-tenant (cada centro solo ve lo suyo).
-- Siguiente: M4 (config de calificación) y M5 (asignación académica + notas).
+  por rol aplicados; aislamiento multi-tenant (cada centro solo ve lo suyo);
+  config de calificación persiste por `centroId` (M4).
+- Siguiente: M5 (asignación académica + notas/asistencia).
 
 ## Credenciales demo (centro "Colegio Norte")
 
 | Rol | Email | Contraseña |
 |---|---|---|
 | Rector | `admin@norte.com` | `Norte123!` |
+
+## Credenciales demo (centro "Masura")
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| Rector | `ccolaura@yahoo.es` | `123456789` |

@@ -22,6 +22,10 @@ const NORTE_USERS: SeedUser[] = [
   { email: "admin@norte.com", password: "Norte123!", nombre: "Rector", apellido: "Norte", rol: "RECTOR" },
 ];
 
+const MASURA_USERS: SeedUser[] = [
+  { email: "ccolaura@yahoo.es", password: "123456789", nombre: "Laura", apellido: "Colaura", rol: "RECTOR" },
+];
+
 async function crearCentro(nombre: string, subdominio: string) {
   return prisma.centro.upsert({
     where: { nombre },
@@ -48,9 +52,11 @@ async function crearUsuario(centroId: string, u: SeedUser) {
 async function main() {
   const demo = await crearCentro("Academia Demo", "demo");
   const norte = await crearCentro("Colegio Norte", "norte");
+  const masura = await crearCentro("Masura", "masura");
 
   for (const u of DEMO_USERS) await crearUsuario(demo.id, u);
   for (const u of NORTE_USERS) await crearUsuario(norte.id, u);
+  for (const u of MASURA_USERS) await crearUsuario(masura.id, u);
 
   const alumno = await prisma.usuario.findUniqueOrThrow({ where: { email: "alumno@demo.com" } });
   const padre = await prisma.usuario.findUniqueOrThrow({ where: { email: "padre@demo.com" } });
@@ -70,10 +76,12 @@ async function main() {
   });
 
   console.log(
-    "Seed OK — centros: Academia Demo, Colegio Norte | demo:",
+    "Seed OK — centros: Academia Demo, Colegio Norte, Masura | demo:",
     DEMO_USERS.map((u) => u.email).join(", "),
     "| norte:",
     NORTE_USERS.map((u) => u.email).join(", "),
+    "| masura:",
+    MASURA_USERS.map((u) => u.email).join(", "),
   );
 }
 

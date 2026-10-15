@@ -40,14 +40,14 @@ y operación/retiro. Se cubren en los hitos 4–5 con pruebas y respaldo.
 ## Decisiones tomadas
 
 - D1: Escala de calificación **configurable por el rector** (0–10 decimales, 0–10 enteros, 1–5, 0–100).
-- D2: **Cortes por período configurables** (1 nota o varios cortes que promedian).
+- D2: **Cortes por período configurables** (1 nota o varios cortes que promedian); viven en `Centro.config` y aplican a todos los períodos.
 - D3: `COORDINADOR` gestiona todo lo académico, salvo usuarios y escala de calificación.
 - D4: Modelado de roles **en espera** (no se toca el enum hasta confirmar).
 
 ## Buenas ideas a implementar (no estaban en el plan)
 
 1. Roles `RECTOR` y `COORDINADOR` (varios coordinadores por colegio).
-2. Config de calificación por centro (D1+D2): campo de configuración en `Centro` + módulo `lib/modules/config`.
+2. Config de calificación por centro (D1+D2): campo de configuración en `Centro` + módulo `lib/modules/config`. **Hecho (M4).**
 3. Pruebas automatizadas con Vitest + CI (GitHub Actions): usar el seed de 2 centros para probar aislamiento.
 4. Importación masiva CSV de estudiantes/matrículas.
 5. Backup con **restauración probada**, no solo `mysqldump`.

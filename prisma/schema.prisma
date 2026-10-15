@@ -27,6 +27,7 @@ model Centro {
   nombre     String       @unique
   subdominio String?      @unique
   estado     EstadoCentro @default(ACTIVO)
+  config     Json?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
 

@@ -10,6 +10,10 @@ roles, hasta el MVP (Fase A). Requisitos: `docs/requirements.md`. Modelo:
 
 - D1: Escala de calificación **configurable por el rector** (0–10 decimales, 0–10 enteros, 1–5, 0–100).
 - D2: **Cortes por período configurables** (1 nota o varios cortes que promedian).
+  Aclaración (2026-10-15, aprobada): los cortes viven en la **config del centro**
+  (`Centro.config`) y aplican a todos los períodos.
+- D9 (2026-10-15, aprobada): la config incluye **`notaAprobatoria`** (mínima de
+  aprobación), además de escala y cortes.
 - D3: `COORDINADOR` gestiona todo lo académico (no usuarios ni escala de calificación).
 - D5: **PK UUID** en todas las tablas.
 - D6: **Estudiante = Usuario** (rol `ESTUDIANTE`) + perfil `Estudiante`; `EstudiantePadre` (N:M multi-hijo).
@@ -39,9 +43,13 @@ transporte, votaciones) — ver `docs/roles.md`.
   login de los 4 roles demo → `/panel` 200; docente/estudiante bloqueados en
   períodos/usuarios; **aislamiento multi-tenant** verificado (admin@norte solo ve
   Colegio Norte y 0 estudiantes de demo).
-- **M4 Configuración de calificación (D1+D2).** Módulo `lib/modules/config` +
-  vista para el rector; config por centro (escala y cortes).
-  *Aceptación:* el rector cambia escala/cortes y se persiste por `centroId`.
+- **M4 Configuración de calificación (D1+D2+D9).** ✅ (2026-10-15) Campo
+  `Centro.config Json?`; módulo `lib/modules/config` (`calificacion.ts` puro +
+  `index.ts` con `getConfigCalificacion` + `actions.ts` con Zod y `AuditLog`);
+  vista `/panel/configuracion` solo RECTOR/ADMIN; enlace en el shell.
+  *Aceptación:* ✅ el rector de Masura (`ccolaura@yahoo.es`) carga la vista (HTTP
+  200) y la config persiste por `centroId` (default → guardado → fallback ante
+  datos corruptos). Evidencia: `tsc`/`eslint` 0.
 - **M5 Asignación académica + Notas y asistencia.** UI sobre
   `CursoAsignaturaDocente` (qué docente dicta qué asignatura en cada curso);
   endpoint de carga de notas con Zod y `AuditLog` automático; boletines por

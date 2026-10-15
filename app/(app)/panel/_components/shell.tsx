@@ -51,6 +51,12 @@ const NAV: { label: string; items: NavItem[] }[] = [
         icon: "settings",
         roles: ["RECTOR", "ADMIN"],
       },
+      {
+        href: "/panel/configuracion",
+        label: "Configuración",
+        icon: "sliders",
+        roles: ["RECTOR", "ADMIN"],
+      },
     ],
   },
 ];

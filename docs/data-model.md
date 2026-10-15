@@ -8,7 +8,9 @@ operativas llevan `centroId` (multi-tenant, REQ-F-11) y auditoría básica
 ## Entidades
 
 ### Centro (tenant)
-`id`, `nombre`, `config`, `createdAt`, `updatedAt`
+`id`, `nombre`, `subdominio?`, `estado`, `config Json?`, `createdAt`, `updatedAt`
+- `config` guarda la **configuración de calificación** (escala, `notaAprobatoria`,
+  `cortes`) — ver `lib/modules/config` y decisión M4 en `plans/fase05_desarrollo_integracion.md`.
 
 ### Usuario
 `id`, `centroId` FK, `email` único por centro, `passwordHash`, `nombre`,
