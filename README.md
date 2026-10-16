@@ -74,20 +74,31 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 
 ## Estado
 
-- Hecho: M0 entorno · M1 modelo+auth (multi-tenant, roles, sesión JWT) ·
-  M2 CRUDs (estudiantes, cursos, períodos, asignaturas, usuarios) · diseño
-  portado a Tailwind (shell, dashboard con datos reales, login) · **M3 modelo v2**
-  (UUID; roles `SUPERADMIN/RECTOR/ADMIN/COORDINADOR/DOCENTE/ESTUDIANTE/PADRE`;
-  `Estudiante`=Usuario + `EstudiantePadre`; `CursoAsignaturaDocente`; `AuditLog`
-  con `descripcion`/`ip`; sesión con `centroId` nullable; seed con 2 centros) ·
-  **M4 config de calificación** (`Centro.config`; módulo `lib/modules/config`;
-  vista `/panel/configuracion` solo RECTOR/ADMIN: escala, nota de aprobación y
-  cortes por período) · **M5a asignaciones** (módulo `lib/modules/asignaciones`;
-  vista `/panel/asignaciones`: docente↔asignatura↔curso, la gestionan
+- Hecho: M0 entorno · 
+
+M1 modelo+auth (multi-tenant, roles, sesión JWT) ·
+
+M2 CRUDs (estudiantes, cursos, períodos, asignaturas, usuarios) · diseño
+portado a Tailwind (shell, dashboard con datos reales, login) ·
+  
+M3 modelo v2
+(UUID; roles `SUPERADMIN/RECTOR/ADMIN/COORDINADOR/DOCENTE/ESTUDIANTE/PADRE`;
+`Estudiante`=Usuario + `EstudiantePadre`; `CursoAsignaturaDocente`; `AuditLog`
+con `descripcion`/`ip`; sesión con `centroId` nullable; seed con 2 centros) ·
+  
+
+M4 config de calificación** (`Centro.config`; módulo `lib/modules/config`;
+vista `/panel/configuracion` solo RECTOR/ADMIN: escala, nota de aprobación y
+cortes por período) · 
+
+M5a asignaciones (módulo `lib/modules/asignaciones`;
+vista `/panel/asignaciones`: docente↔asignatura↔curso, la gestionan
   RECTOR/ADMIN/COORDINADOR).
 - Verificado: `tsc`/`eslint` 0; login de los 4 roles demo → `/panel` 200; permisos
   por rol aplicados; aislamiento multi-tenant (cada centro solo ve lo suyo);
-  config de calificación persiste por `centroId` (M4); en asignaciones el
+  config de calificación persiste por `centroId` 
+  
+(M4); en asignaciones el
   docente ve sin formulario y el estudiante es redirigido (M5a).
 - Siguiente: M5b (carga de notas) y M5c (asistencia diaria).
 

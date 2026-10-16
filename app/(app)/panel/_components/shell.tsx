@@ -27,6 +27,12 @@ const NAV: { label: string; items: NavItem[] }[] = [
         icon: "students",
         roles: ACADEMICO,
       },
+      {
+        href: "/panel/matriculas",
+        label: "Matrículas",
+        icon: "clipboard",
+        roles: DIRECTIVO,
+      },
       { href: "/panel/cursos", label: "Cursos", icon: "book" },
       {
         href: "/panel/asignaturas",
@@ -38,6 +44,12 @@ const NAV: { label: string; items: NavItem[] }[] = [
         href: "/panel/asignaciones",
         label: "Asignaciones",
         icon: "check",
+        roles: ACADEMICO,
+      },
+      {
+        href: "/panel/notas",
+        label: "Notas",
+        icon: "edit",
         roles: ACADEMICO,
       },
       {

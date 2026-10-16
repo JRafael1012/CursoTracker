@@ -17,6 +17,8 @@ export type IconName =
   | "close"
   | "plus"
   | "check"
+  | "clipboard"
+  | "edit"
   | "trend"
   | "logout";
 
@@ -39,6 +41,8 @@ const icons: Record<IconName, React.ReactNode> = {
   close: <><path d="m6 6 12 12M18 6 6 18" /></>,
   plus: <><path d="M12 5v14M5 12h14" /></>,
   check: <path d="m5 12 4 4L19 6" />,
+  clipboard: <><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /></>,
+  edit: <><path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" /></>,
   trend: <><path d="m3 17 6-6 4 4 8-9" /><path d="M15 6h6v6" /></>,
   logout: <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5M21 12H9" /></>,
 };

@@ -181,6 +181,7 @@ model Nota {
   estudianteId            String
   cursoAsignaturaDocenteId String
   periodoId               String
+  corte                   String   @default("")
   valor                   Decimal  @db.Decimal(5, 2)
   autorId                 String
   fecha                   DateTime @default(now())
@@ -192,7 +193,7 @@ model Nota {
   periodo           Periodo                @relation(fields: [periodoId], references: [id], onDelete: Restrict)
   autor             Usuario                @relation("NotaAutor", fields: [autorId], references: [id], onDelete: Restrict)
 
-  @@unique([estudianteId, cursoAsignaturaDocenteId, periodoId])
+  @@unique([estudianteId, cursoAsignaturaDocenteId, periodoId, corte])
   @@index([centroId, periodoId])
 }
 
