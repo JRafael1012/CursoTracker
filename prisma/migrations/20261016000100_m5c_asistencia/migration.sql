@@ -1,0 +1,20 @@
+CREATE TABLE `asistencia` (
+  `id` VARCHAR(191) NOT NULL,
+  `centroId` VARCHAR(191) NOT NULL,
+  `estudianteId` VARCHAR(191) NOT NULL,
+  `cursoAsignaturaDocenteId` VARCHAR(191) NOT NULL,
+  `periodoId` VARCHAR(191) NOT NULL,
+  `fecha` DATE NOT NULL,
+  `estado` ENUM('PRESENTE','AUSENTE','TARDE','JUSTIFICADO') NOT NULL,
+  `autorId` VARCHAR(191) NOT NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `Asistencia_estudianteId_cursoAsignaturaDocenteId_fecha_key` (`estudianteId`,`cursoAsignaturaDocenteId`,`fecha`),
+  INDEX `Asistencia_centroId_fecha_idx` (`centroId`,`fecha`),
+  CONSTRAINT `Asistencia_centroId_fkey` FOREIGN KEY (`centroId`) REFERENCES `Centro`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `Asistencia_estudianteId_fkey` FOREIGN KEY (`estudianteId`) REFERENCES `Estudiante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `Asistencia_cursoAsignaturaDocenteId_fkey` FOREIGN KEY (`cursoAsignaturaDocenteId`) REFERENCES `CursoAsignaturaDocente`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `Asistencia_periodoId_fkey` FOREIGN KEY (`periodoId`) REFERENCES `Periodo`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `Asistencia_autorId_fkey` FOREIGN KEY (`autorId`) REFERENCES `Usuario`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

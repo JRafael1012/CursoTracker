@@ -53,6 +53,12 @@ const NAV: { label: string; items: NavItem[] }[] = [
         roles: ACADEMICO,
       },
       {
+        href: "/panel/asistencia",
+        label: "Asistencia",
+        icon: "clock",
+        roles: ACADEMICO,
+      },
+      {
         href: "/panel/periodos",
         label: "Períodos",
         icon: "calendar",
