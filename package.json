@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:nh": "tsx prisma/seed-nuevo-horizonte.ts"
+    "seed:nh": "tsx scripts/seed-nuevo-horizonte.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
