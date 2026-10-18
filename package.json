@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
-    "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",
     "next": "16.4.0",
     "next-auth": "5.0.0-beta.29",
@@ -23,8 +22,8 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/turbopack": "^4.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
