@@ -57,7 +57,8 @@ export async function handleBoletinExcel(searchParams: URLSearchParams) {
   if (!buf) return NextResponse.json({ error: "Datos no encontrados" }, { status: 404 });
 
   await logAudit({ centroId, usuarioId: user.id, accion: "EXPORT", entidad: "Boletin", descripcion: "Boletín Excel" });
-  return fileRes(buf, XLSX_MIME, "boletin", "xlsx");
+  const base = `boletin-${estId}`;
+  return fileRes(buf, XLSX_MIME, base, "xlsx");
 }
 
 export async function handleBoletinPdf(searchParams: URLSearchParams) {
@@ -90,7 +91,8 @@ export async function handleBoletinPdf(searchParams: URLSearchParams) {
   if (!buf) return NextResponse.json({ error: "Datos no encontrados" }, { status: 404 });
 
   await logAudit({ centroId, usuarioId: user.id, accion: "EXPORT", entidad: "Boletin", descripcion: "Boletín PDF" });
-  return fileRes(buf, "application/pdf", "boletin", "pdf");
+  const base = `boletin-${estId}`;
+  return fileRes(buf, "application/pdf", base, "pdf");
 }
 
 export async function handleSabanaExcel(searchParams: URLSearchParams) {
