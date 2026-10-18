@@ -33,7 +33,27 @@ export async function handleBoletinExcel(searchParams: URLSearchParams) {
   const centroId = user.centroId;
   if (!centroId) return NextResponse.json({ error: "Sin centro" }, { status: 400 });
 
-  const buf = await boletinToExcel(centroId, searchParams.get("estudianteId") ?? "", searchParams.get("periodoId") ?? "");
+  let estId = searchParams.get("estudianteId") ?? "";
+
+  if (user.rol === "ESTUDIANTE") {
+    const est = await prisma.estudiante.findFirst({
+      where: { usuarioId: user.id, centroId },
+      select: { id: true },
+    });
+    if (!est) return NextResponse.json({ error: "Sin acceso" }, { status: 403 });
+    estId = est.id;
+  } else if (user.rol === "PADRE") {
+    const hijos = await prisma.estudiantePadre.findMany({
+      where: { padreId: user.id, estudiante: { centroId } },
+      select: { estudianteId: true },
+    });
+    const permitidos = new Set(hijos.map((h) => h.estudianteId));
+    if (!estId || !permitidos.has(estId)) {
+      return NextResponse.json({ error: "Sin acceso al estudiante solicitado" }, { status: 403 });
+    }
+  }
+
+  const buf = await boletinToExcel(centroId, estId, searchParams.get("periodoId") ?? "");
   if (!buf) return NextResponse.json({ error: "Datos no encontrados" }, { status: 404 });
 
   await logAudit({ centroId, usuarioId: user.id, accion: "EXPORT", entidad: "Boletin", descripcion: "Boletín Excel" });
@@ -45,8 +65,28 @@ export async function handleBoletinPdf(searchParams: URLSearchParams) {
   const centroId = user.centroId;
   if (!centroId) return NextResponse.json({ error: "Sin centro" }, { status: 400 });
 
+  let estId = searchParams.get("estudianteId") ?? "";
+
+  if (user.rol === "ESTUDIANTE") {
+    const est = await prisma.estudiante.findFirst({
+      where: { usuarioId: user.id, centroId },
+      select: { id: true },
+    });
+    if (!est) return NextResponse.json({ error: "Sin acceso" }, { status: 403 });
+    estId = est.id;
+  } else if (user.rol === "PADRE") {
+    const hijos = await prisma.estudiantePadre.findMany({
+      where: { padreId: user.id, estudiante: { centroId } },
+      select: { estudianteId: true },
+    });
+    const permitidos = new Set(hijos.map((h) => h.estudianteId));
+    if (!estId || !permitidos.has(estId)) {
+      return NextResponse.json({ error: "Sin acceso al estudiante solicitado" }, { status: 403 });
+    }
+  }
+
   const centro = await centroNombre(centroId);
-  const buf = await boletinToPdf(centroId, searchParams.get("estudianteId") ?? "", searchParams.get("periodoId") ?? "", centro);
+  const buf = await boletinToPdf(centroId, estId, searchParams.get("periodoId") ?? "", centro);
   if (!buf) return NextResponse.json({ error: "Datos no encontrados" }, { status: 404 });
 
   await logAudit({ centroId, usuarioId: user.id, accion: "EXPORT", entidad: "Boletin", descripcion: "Boletín PDF" });

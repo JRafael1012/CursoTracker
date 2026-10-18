@@ -1,10 +1,7 @@
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/modules/auth/session";
 
-function qs(params: Record<string, string>) {
-  const p = new URLSearchParams(params);
-  return p.toString();
-}
+
 
 export default async function ReportesPage() {
   const user = await requireRole("RECTOR", "ADMIN", "COORDINADOR", "DOCENTE", "ESTUDIANTE", "PADRE");
