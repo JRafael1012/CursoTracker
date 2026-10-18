@@ -27,17 +27,17 @@ amigable y accesible desde cualquier dispositivo.
 ## Stack
 
 Next.js 16 (App Router, React 19, TypeScript, Tailwind 4) · Prisma 6 + MySQL/
-MariaDB (XAMPP) · Auth.js (next-auth, JWT) · Zod · bcryptjs. Reportes previstos:
-SheetJS (Excel) y `@react-pdf/renderer` (PDF). Despliegue local (red LAN).
+MariaDB (XAMPP) · Auth.js (next-auth, JWT) · Zod · bcryptjs · SheetJS (`xlsx`)
+y `@react-pdf/renderer` para reportes. Despliegue local (red LAN).
 
 ## Perfil MIDEGS
 
-Riguroso — datos sensibles de menores, múltiples usuarios, alto impacto.
+Riguroso — datos sensibles de múltiples usuarios, alto impacto.
 
 ## Puesta en marcha
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 npx prisma migrate dev        # crea/actualiza el esquema
 npx prisma db seed            # datos demo
 npm run dev                   # http://localhost:3000
@@ -55,6 +55,18 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 | Estudiante | `alumno@demo.com` | `Alumno123!` |
 | Padre | `padre@demo.com` | `Padre123!` |
 
+### Credenciales demo (centro "Colegio Norte")
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| Rector | `admin@norte.com` | `Norte123!` |
+
+### Credenciales demo (centro "Masura")
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| Rector | `ccolaura@yahoo.es` | `123456789` |
+
 ## Documentación
 
 - Requisitos: `docs/requirements.md`
@@ -70,46 +82,29 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - [x] Fase 02 — Descubrimiento y requisitos (`docs/requirements.md`, vivo)
 - [x] Fase 03 — Arquitectura y diseño (`docs/architecture.md`, `docs/data-model.md`)
 - [x] Fase 04 — Planificación y preparación (`plans/fase04_planificacion_preparacion.md`)
-- [ ] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`) · M3+M4+M5a hechos
+- [x] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`)
 
 ## Estado
 
-- Hecho: M0 entorno · 
-
-M1 modelo+auth (multi-tenant, roles, sesión JWT) ·
-
-M2 CRUDs (estudiantes, cursos, períodos, asignaturas, usuarios) · diseño
-portado a Tailwind (shell, dashboard con datos reales, login) ·
-  
-M3 modelo v2
-(UUID; roles `SUPERADMIN/RECTOR/ADMIN/COORDINADOR/DOCENTE/ESTUDIANTE/PADRE`;
-`Estudiante`=Usuario + `EstudiantePadre`; `CursoAsignaturaDocente`; `AuditLog`
-con `descripcion`/`ip`; sesión con `centroId` nullable; seed con 2 centros) ·
-  
-
-M4 config de calificación** (`Centro.config`; módulo `lib/modules/config`;
-vista `/panel/configuracion` solo RECTOR/ADMIN: escala, nota de aprobación y
-cortes por período) · 
-
-M5a asignaciones (módulo `lib/modules/asignaciones`;
-vista `/panel/asignaciones`: docente↔asignatura↔curso, la gestionan
-  RECTOR/ADMIN/COORDINADOR).
-- Verificado: `tsc`/`eslint` 0; login de los 4 roles demo → `/panel` 200; permisos
-  por rol aplicados; aislamiento multi-tenant (cada centro solo ve lo suyo);
-  config de calificación persiste por `centroId` 
-  
-(M4); en asignaciones el
-  docente ve sin formulario y el estudiante es redirigido (M5a).
-- Siguiente: M5b (carga de notas) y M5c (asistencia diaria).
-
-## Credenciales demo (centro "Colegio Norte")
-
-| Rol | Email | Contraseña |
-|---|---|---|
-| Rector | `admin@norte.com` | `Norte123!` |
-
-## Credenciales demo (centro "Masuera")
-
-| Rol | Email | Contraseña |
-|---|---|---|
-| Rector | `ccolaura@yahoo.es` | `123456789` |
+- Hecho: M0 entorno ·
+  M1 modelo+auth (multi-tenant, roles, sesión JWT) ·
+  M2 CRUDs (estudiantes, cursos, períodos, asignaturas, usuarios) ·
+  M3 modelo v2 (UUID, roles extendidos, `Estudiante` = Usuario + perfil,
+  `CursoAsignaturaDocente`, `AuditLog`, sesión con `centroId` nullable) ·
+  M4 config de calificación (`Centro.config`: escala, nota de aprobación y
+  cortes por período, solo RECTOR/ADMIN) ·
+  M5a asignaciones (docente ↔ asignatura ↔ curso) ·
+  M5b carga de notas (por clase, período y corte; multicalificación D2;
+  solo RECTOR/ADMIN/COORDINADOR/DOCENTE; el DOCENTE solo sus clases) ·
+  M5c asistencia diaria (PRESENTE/AUSENTE/TARDE/JUSTIFICADO) ·
+  M6 reportes Excel/PDF (boletín por estudiante, sábana por curso,
+  estadísticas aprobados/suspenso; AuditLog en cada export; scoping por rol:
+  estudiante solo su boletín, padre solo sus hijos)
+- Verificado: `tsc` 0 · `eslint` 0 · login de los 4 roles demo → `/panel` 200 ·
+  permisos por rol aplicados (estudiante redirigido de `/panel/notas` y
+  `/panel/asistencia`) · aislamiento multi-tenant · 6 exports con magic bytes
+  correctos (`PK` xlsx, `%PDF` pdf) y encoding UTF-8 · fix de sesión con
+  cookie inválida (proxy valida JWE y la limpia).
+- Siguiente: Fase 06 — Verificación y validación (pruebas automatizadas,
+  aislamiento multi-tenant con Vitest, CI) y M7 (despliegue, backup
+  mysqldump con restauración probada, vulnerabilidades npm audit).
