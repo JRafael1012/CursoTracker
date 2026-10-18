@@ -64,6 +64,12 @@ const NAV: { label: string; items: NavItem[] }[] = [
         icon: "calendar",
         roles: DIRECTIVO,
       },
+      {
+        href: "/panel/reportes",
+        label: "Reportes",
+        icon: "chart",
+        roles: [...ACADEMICO, "ESTUDIANTE", "PADRE"],
+      },
     ],
   },
   {

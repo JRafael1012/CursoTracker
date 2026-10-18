@@ -75,11 +75,18 @@ transporte, votaciones) — ver `docs/roles.md`.
   (HKDF sha256) en vez de solo comprobar presencia de cookie; cookie inválida
   se borra automáticamente. Rompe el bucle `/login` ↔ `/panel` con cookies
   viejas. Evidencia: curl (6 escenarios en verde) + commit `bc549db`.
-- **M6 Reportes.** Excel (SheetJS) y PDF (`@react-pdf/renderer`) con pruebas de
-  encoding (acentos/ñ); sábanas para docentes/directivos; boletines.
-- **M7 Despliegue y calidad.** Escucha en `0.0.0.0`; `mysqldump` diario **con
-  restauración probada**; pruebas de aislamiento multi-tenant con Vitest + CI;
-  resolver las 8 vulnerabilidades `high`.
+- **M6 Reportes.** ✅ (2026-10-18) Excel (SheetJS `xlsx`) y PDF
+  (`@react-pdf/renderer`). Módulo `lib/modules/reportes` (queries + excel.ts +
+  pdf.tsx + actions.ts). 6 API routes bajo `/api/reportes/{boletin|sabana|
+  estadisticas}/{excel|pdf}`. Boletín por estudiante (REQ-F-06), sábana por
+  curso (REQ-F-07), estadísticas aprobados/suspenso (REQ-F-08). Vista
+  `/panel/reportes`. `AuditLog` en cada export. Encoding ñ/acentos verificado.
+  *Aceptación:* ✅ los 6 exports devuelven 200 con magic bytes correctos
+  (`50 4B` = xlsx, `25 50 44 46` = pdf) y contenido UTF-8 legible.
+  `tsc`/`eslint` 0.
+- **M7 Despliegue y calidad.** ⏳ Pendiente. Escucha en `0.0.0.0`;
+  `mysqldump` diario **con restauración probada**; pruebas de aislamiento
+  multi-tenant con Vitest + CI; resolver las 10 vulnerabilidades `npm audit`.
 
 ## Criterios de aceptación (fase)
 
