@@ -61,10 +61,20 @@ transporte, votaciones) — ver `docs/roles.md`.
   el docente la ve **sin** formulario; el estudiante es redirigido a `/panel`;
   datos filtrados por `centroId`. Evidencia: `tsc`/`eslint` 0. (Además, el tipo
   `FormState` —duplicado en 6 módulos— se unificó en `lib/modules/form.ts`.)
-- **M5b Carga de notas.** ⏳ Pendiente. Endpoint con Zod y `AuditLog`; **requiere
-  `corte` en `Nota`** (multicalificación por cortes, D2) y ajustar su índice único.
-- **M5c Asistencia diaria.** ⏳ Pendiente. **Requiere un nuevo modelo
-  `Asistencia`** (diseñar antes de codificar).
+- **M5b Carga de notas.** ✅ (2026-10-18) `corte` agregado a `Nota` (String,
+  default `""`), índice único `[estudianteId, cursoAsignaturaDocenteId,
+  periodoId, corte]` (D2/D8). Módulo `lib/modules/notas` (Zod + `AuditLog`,
+  valida escala y corte contra la config del centro). Vista `/panel/notas` con
+  grid por clase/período/corte; el DOCENTE solo ve sus clases.
+  *Aceptación:* ✅ HTTP 200 para admin y docente; `tsc`/`eslint` 0.
+- **M5c Asistencia diaria.** ✅ (2026-10-18) Modelo `Asistencia` (enum
+  `EstadoAsistencia`, índice único `[estudianteId, cursoAsignaturaDocenteId,
+  fecha]`). Módulo `lib/modules/asistencia`. Vista `/panel/asistencia`.
+  *Aceptación:* ✅ HTTP 200 para docente; `tsc`/`eslint` 0.
+- **Fix auth (post-M5c).** ✅ (2026-10-18) `proxy.ts` valida el JWE de Auth.js
+  (HKDF sha256) en vez de solo comprobar presencia de cookie; cookie inválida
+  se borra automáticamente. Rompe el bucle `/login` ↔ `/panel` con cookies
+  viejas. Evidencia: curl (6 escenarios en verde) + commit `bc549db`.
 - **M6 Reportes.** Excel (SheetJS) y PDF (`@react-pdf/renderer`) con pruebas de
   encoding (acentos/ñ); sábanas para docentes/directivos; boletines.
 - **M7 Despliegue y calidad.** Escucha en `0.0.0.0`; `mysqldump` diario **con
