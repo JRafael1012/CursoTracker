@@ -45,6 +45,9 @@ next-env.d.ts
 # dev logs
 *.log
 
+# backups locales (contienen datos y hashes)
+/backups/
+
 # tooling generado por `prisma init`
 .claude/
 .windsurf/
