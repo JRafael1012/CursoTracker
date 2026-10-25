@@ -83,6 +83,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - Diseño (paleta/assets): `docs/design.md`
 - Roadmap de ideas: `docs/ideas.md`
 - Backup y restauración: `docs/backup-restore.md`
+- Operación (runbook y bitácora): `docs/operacion.md`
 
 ## Fases (MIDEGS)
 
@@ -93,6 +94,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - [x] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`)
 - [x] Fase 06 — Verificación y validación (`plans/fase06_verificacion_validacion.md`)
 - [x] Fase 07 — Liberación y despliegue (`plans/fase07_liberacion_despliegue.md`)
+- [x] Fase 08 — Operación y mantenimiento (`plans/fase08_operacion_mantenimiento.md`)
 
 ## Estado
 
@@ -114,7 +116,9 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
   documentada, vulnerabilidades revisadas) ·
   Fase 06 verificación (Vitest, smoke test por rol, CI) ·
   Fase 07 liberación v1.0.0 (build de producción en LAN, restauración real
-  probada, tag y release)
+  probada, tag y release) ·
+  Fase 08 operación (backup diario 23:00 con retención 30 d, health check,
+  runbook y restauración trimestral)
 - Verificado: `tsc` 0 · `eslint` 0 · `vitest` 3/3 · `next build` OK ·
   smoke test 21/21 contra producción (`scripts/smoke-test.mjs`) · login de 5
   roles demo → `/panel` 200 · permisos por rol aplicados (estudiante fuera de
@@ -123,5 +127,6 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
   (rector ajeno 404, padre ajeno 403) · 6 exports con magic bytes correctos
   (`PK` xlsx, `%PDF` pdf) y encoding UTF-8 · restauración probada en BD
   temporal: 67/67 filas · servidor accesible en `192.168.80.12:3000` · fix de
-  sesión con cookie inválida (proxy valida JWE y la limpia).
-- Siguiente: Fase 08 — Operación y mantenimiento.
+  sesión con cookie inválida (proxy valida JWE y la limpia) · backup diario
+  23:00 con retención 30 d (tarea de Windows) y health check HTTP+BD en verde.
+- Siguiente: Fase 09 — Evaluación y mejora.

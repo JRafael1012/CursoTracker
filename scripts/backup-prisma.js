@@ -2,6 +2,22 @@ const { PrismaClient } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
 
+const RETENCION_DIAS = Number(process.env.BACKUP_RETENTION_DAYS ?? 30);
+
+function limpiarAntiguos(dir) {
+  const limite = Date.now() - RETENCION_DIAS * 24 * 60 * 60 * 1000;
+  let borrados = 0;
+  for (const nombre of fs.readdirSync(dir)) {
+    if (!/^curso_tracker_prisma_.*\.json$/.test(nombre)) continue;
+    const ruta = path.join(dir, nombre);
+    if (fs.statSync(ruta).mtimeMs < limite) {
+      fs.unlinkSync(ruta);
+      borrados++;
+    }
+  }
+  return borrados;
+}
+
 async function main() {
   const prisma = new PrismaClient();
   try {
@@ -27,10 +43,12 @@ async function main() {
     
     fs.writeFileSync(out, JSON.stringify(data, null, 2));
     const size = fs.statSync(out).size;
+    const borrados = limpiarAntiguos(backupDir);
     console.log('[OK] Backup generado con Prisma');
     console.log('[OK] Archivo:', out);
-    console.log('[OK] Tamaño:', Math.round(size/1024), 'KB');
+    console.log('[OK] Tamano:', Math.round(size/1024), 'KB');
     console.log('[OK] Tablas:', Object.keys(data).filter(k => k !== 'meta').length);
+    console.log('[OK] Retencion:', RETENCION_DIAS, 'dias - eliminados:', borrados);
   } catch (e) {
     console.error('[ERR]', e.message);
   } finally {
