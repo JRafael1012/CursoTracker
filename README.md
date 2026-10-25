@@ -84,6 +84,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - Roadmap de ideas: `docs/ideas.md`
 - Backup y restauración: `docs/backup-restore.md`
 - Operación (runbook y bitácora): `docs/operacion.md`
+- Evaluación v1.0.0: `docs/evaluacion-v1.md` · Mejoras: `docs/mejoras.md`
 
 ## Fases (MIDEGS)
 
@@ -95,6 +96,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - [x] Fase 06 — Verificación y validación (`plans/fase06_verificacion_validacion.md`)
 - [x] Fase 07 — Liberación y despliegue (`plans/fase07_liberacion_despliegue.md`)
 - [x] Fase 08 — Operación y mantenimiento (`plans/fase08_operacion_mantenimiento.md`)
+- [ ] Fase 09 — Evaluación y mejora (`plans/fase09_evaluacion_mejora.md`, en curso)
 
 ## Estado
 
@@ -118,15 +120,18 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
   Fase 07 liberación v1.0.0 (build de producción en LAN, restauración real
   probada, tag y release) ·
   Fase 08 operación (backup diario 23:00 con retención 30 d, health check,
-  runbook y restauración trimestral)
+  runbook y restauración trimestral) ·
+  Fase 09 evaluación (baseline de uso y calidad, auditoría `npm`, top 5 de
+  mejoras; encuesta pendiente)
 - Verificado: `tsc` 0 · `eslint` 0 · `vitest` 3/3 · `next build` OK ·
-  smoke test 21/21 contra producción (`scripts/smoke-test.mjs`) · login de 5
+  smoke test 22/22 contra producción (`scripts/smoke-test.mjs`) · login de 5
   roles demo → `/panel` 200 · permisos por rol aplicados (estudiante fuera de
   `/panel/notas` y `/panel/asistencia`; en producción Next responde 200 con
   `NEXT_REDIRECT` y sin contenido de la página) · aislamiento multi-tenant
   (rector ajeno 404, padre ajeno 403) · 6 exports con magic bytes correctos
   (`PK` xlsx, `%PDF` pdf) y encoding UTF-8 · restauración probada en BD
-  temporal: 67/67 filas · servidor accesible en `192.168.80.12:3000` · fix de
+  temporal: 85/85 filas · servidor accesible en `192.168.80.12:3000` · fix de
   sesión con cookie inválida (proxy valida JWE y la limpia) · backup diario
   23:00 con retención 30 d (tarea de Windows) y health check HTTP+BD en verde.
-- Siguiente: Fase 09 — Evaluación y mejora.
+- En curso: Fase 09 — falta la encuesta a rector/docente. Después, Fase 10 —
+  Retiro o reemplazo.

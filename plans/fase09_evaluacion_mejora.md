@@ -50,7 +50,13 @@ Fase 10 (retiro/reemplazo). Base: `docs/operacion.md` y
 
 ## Evidencia
 
-- `docs/evaluacion-v1.md` con baseline y decisión.
-- Salida de las métricas.
-- `docs/mejoras.md` priorizado.
-- Encuesta (o su estado pendiente).
+- `docs/evaluacion-v1.md` con baseline, seguridad, lecciones y decisión.
+- `scripts/metrics.mjs` y su salida (2026-10-25).
+- `docs/mejoras.md` con top 5 priorizado.
+- `npm audit --omit=dev`: 4 vulnerabilidades (3 críticas, 1 alta).
+- Encuesta: **pendiente** (no se simulan respuestas).
+
+## Estado
+
+En curso — baseline, decisión y mejoras listos el 2026-10-25. Falta aplicar la
+encuesta a rector/docente para cerrar la fase.
