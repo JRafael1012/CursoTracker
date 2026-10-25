@@ -64,8 +64,10 @@ respaldo/restauración probados y rollback documentado. Despliegue decidido en
 - Restauración real: **67/67 filas**, conteos iguales; BD temporal eliminada.
 - Backups: previo `18-27-16` (25 KB) y posterior `18-34-29` (31 KB).
 - Rollback ensayado en seco (commit `c0cabe9` + backup previo disponibles).
-- Tag `v1.0.0` y CI: se registran al push del commit de cierre.
+- Tag `v1.0.0` pusheado; CI en verde:
+  https://github.com/JRafael1012/CursoTracker/actions/runs/40222097446
 
 ## Estado
 
-Completada — 2026-10-25 (sujeta a CI en verde tras el push del tag).
+Completada — 2026-10-25. Release en GitHub pendiente de `gh auth login`
+(no bloquea el tag).
