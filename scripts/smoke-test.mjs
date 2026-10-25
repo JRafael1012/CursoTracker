@@ -105,8 +105,10 @@ async function main() {
   const panelHome = await get("/panel", sessions["admin@demo.com"].cookie);
   const panelHomeBody = await panelHome.text();
   check(
-    "botón cerrar sesión visible en el panel",
-    panelHome.status === 200 && panelHomeBody.includes("Cerrar sesión"),
+    "menú de usuario con cerrar sesión",
+    panelHome.status === 200 &&
+      panelHomeBody.includes('id="menu-usuario"') &&
+      panelHomeBody.includes("Cerrar sesión"),
     `status=${panelHome.status}`,
   );
 

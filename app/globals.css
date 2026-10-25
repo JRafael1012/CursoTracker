@@ -185,6 +185,9 @@ button {
   .compact-profile {
     @apply flex items-center gap-[9px] border-0 border-l border-border bg-transparent py-0 pr-0 pl-4 text-left text-text;
   }
+  .compact-profile:hover {
+    @apply text-primary;
+  }
   .compact-profile strong {
     @apply block text-[11px];
   }
@@ -194,11 +197,32 @@ button {
   .compact-profile svg {
     @apply ml-[3px] rotate-90 text-faint;
   }
-  .logout-button {
-    @apply flex h-9 items-center gap-[7px] rounded-lg border border-border bg-white px-3 text-[11px] font-semibold text-muted transition-colors;
+  .compact-profile[aria-expanded="true"] svg {
+    @apply -rotate-90;
   }
-  .logout-button:hover {
-    @apply border-danger/30 bg-danger/5 text-danger;
+  .profile-menu {
+    @apply relative;
+  }
+  .profile-popover {
+    @apply absolute top-[calc(100%+10px)] right-0 z-40 w-[230px] rounded-xl border border-border bg-white p-[12px] shadow-[0_18px_45px_rgba(15,23,42,.13)];
+  }
+  .profile-popover-head {
+    @apply mb-[7px] border-b border-border px-1 pb-[9px];
+  }
+  .profile-popover-head strong {
+    @apply block truncate text-[11px] text-text;
+  }
+  .profile-popover-head span {
+    @apply mt-0.5 block truncate text-[10px] text-muted;
+  }
+  .profile-popover-head small {
+    @apply mt-1 inline-block rounded-md bg-soft-indigo px-1.5 py-0.5 text-[9px] font-semibold text-secondary;
+  }
+  .profile-logout {
+    @apply flex w-full items-center gap-2 rounded-lg px-[9px] py-[8px] text-[11px] font-semibold text-danger;
+  }
+  .profile-logout:hover {
+    @apply bg-danger/5;
   }
   .menu-button {
     @apply hidden max-lg:grid;

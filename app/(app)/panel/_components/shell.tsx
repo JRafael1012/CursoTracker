@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/lib/modules/auth/actions";
 import { Icon, type IconName } from "@/components/icon";
 
@@ -122,6 +122,26 @@ export function Shell({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!profileOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!profileRef.current?.contains(event.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setProfileOpen(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [profileOpen]);
 
   const nombre = user.name ?? user.email ?? "";
   const rolLabel = ROL_LABEL[user.rol] ?? user.rol;
@@ -225,29 +245,50 @@ export function Shell({
           <div className="topbar-actions">
             <button
               className="icon-button notification-button"
-              onClick={() => setNotifOpen((v) => !v)}
+              onClick={() => {
+                setNotifOpen((v) => !v);
+                setProfileOpen(false);
+              }}
               aria-label="Notificaciones"
             >
               <Icon name="bell" />
             </button>
-            <div className="compact-profile">
-              <div className="avatar avatar-admin">{initials(nombre)}</div>
-              <div className="max-sm:hidden">
-                <strong>{nombre.split(" ")[0]}</strong>
-                <span>{rolLabel}</span>
-              </div>
-              <Icon name="chevron" size={15} />
-            </div>
-            <form action={logoutAction}>
+            <div className="profile-menu" ref={profileRef}>
               <button
-                className="logout-button"
-                aria-label="Cerrar sesión"
-                title="Cerrar sesión"
+                type="button"
+                className="compact-profile"
+                onClick={() => {
+                  setProfileOpen((v) => !v);
+                  setNotifOpen(false);
+                }}
+                aria-expanded={profileOpen}
+                aria-controls="menu-usuario"
+                aria-label="Menú de usuario"
               >
-                <Icon name="logout" size={16} />
-                <span className="max-sm:hidden">Cerrar sesión</span>
+                <div className="avatar avatar-admin">{initials(nombre)}</div>
+                <div className="max-sm:hidden">
+                  <strong>{nombre.split(" ")[0]}</strong>
+                  <span>{rolLabel}</span>
+                </div>
+                <Icon name="chevron" size={15} />
               </button>
-            </form>
+              <div
+                id="menu-usuario"
+                className={`profile-popover ${profileOpen ? "" : "hidden"}`}
+              >
+                <div className="profile-popover-head">
+                  <strong>{nombre}</strong>
+                  <span>{user.email}</span>
+                  <small>{rolLabel}</small>
+                </div>
+                <form action={logoutAction}>
+                  <button className="profile-logout">
+                    <Icon name="logout" size={16} />
+                    <span>Cerrar sesión</span>
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
           {notifOpen && (
             <div className="notification-popover">
