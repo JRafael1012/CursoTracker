@@ -54,6 +54,8 @@ Fase 10 (retiro/reemplazo). Base: `docs/operacion.md` y
 - `scripts/metrics.mjs` y su salida (2026-10-25).
 - `docs/mejoras.md` con top 5 priorizado.
 - `npm audit --omit=dev`: 4 vulnerabilidades (3 críticas, 1 alta).
+- Mejora #1 aplicada el 2026-10-25 (`next` 16.4.3, `next-auth` beta.32): audit
+  de producción en 1 alta (`xlsx`), smoke 22/22 y build OK.
 - Encuesta: **pendiente** (no se simulan respuestas).
 
 ## Estado

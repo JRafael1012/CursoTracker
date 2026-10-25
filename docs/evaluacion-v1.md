@@ -41,6 +41,11 @@ fase (fuera de alcance); quedan como prioridad 1.
 - `xlsx` 0.18.5: prototype pollution y ReDoS; **sin fix en npm** (SheetJS
   migró a distribución propia).
 
+**Actualización 2026-10-25:** se aplicaron los parches de `next` (16.4.3) y
+`next-auth` (5.0.0-beta.32). Tras el cambio, `npm audit --omit=dev` reporta
+**1 vulnerabilidad alta** (`xlsx`, sin fix) y ya no hay críticas en producción.
+Quedan 3 avisos altos en dependencias de desarrollo del CLI de Prisma.
+
 ## Incidentes
 
 - Ninguno crítico en operación.

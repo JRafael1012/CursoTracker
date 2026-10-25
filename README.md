@@ -132,6 +132,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
   (`PK` xlsx, `%PDF` pdf) y encoding UTF-8 · restauración probada en BD
   temporal: 85/85 filas · servidor accesible en `192.168.80.12:3000` · fix de
   sesión con cookie inválida (proxy valida JWE y la limpia) · backup diario
-  23:00 con retención 30 d (tarea de Windows) y health check HTTP+BD en verde.
+  23:00 con retención 30 d (tarea de Windows) y health check HTTP+BD en verde ·
+  `next` 16.4.3 y `next-auth` beta.32 (audit prod: 1 alta `xlsx`, sin fix).
 - En curso: Fase 09 — falta la encuesta a rector/docente. Después, Fase 10 —
   Retiro o reemplazo.

@@ -5,7 +5,7 @@ no implementado. Origen: `docs/evaluacion-v1.md`.
 
 | # | Mejora | Riesgo | Valor | Esfuerzo | Score | Estado |
 |---|---|---|---|---|---|---|
-| 1 | Actualizar `next` a 16.4.3 y `next-auth` 5.0.0-beta.32 | 5 | 5 | 1 | 25.0 | Propuesto |
+| 1 | Actualizar `next` a 16.4.3 y `next-auth` 5.0.0-beta.32 | 5 | 5 | 1 | 25.0 | **Hecho** 2026-10-25 |
 | 2 | Backup externo (unidad/nube) + alerta si falla | 4 | 5 | 2 | 10.0 | Propuesto |
 | 3 | Alertas de healthcheck y backup (correo/Telegram) | 3 | 4 | 2 | 6.0 | Propuesto |
 | 4 | Sustituir `xlsx` 0.18.5 (sin fix) por exceljs o SheetJS 0.20.3 | 4 | 4 | 3 | 5.3 | Propuesto |
@@ -13,8 +13,8 @@ no implementado. Origen: `docs/evaluacion-v1.md`.
 
 ## Notas
 
-- #1 es bloqueante de seguridad: `next` tiene RCE en Image Optimization y
-  `next-auth` fail-open. Verificar login, roles y smoke tras actualizar.
+- #1 hecho el 2026-10-25: `next` 16.4.3 y `next-auth` 5.0.0-beta.32; `npm
+  audit --omit=dev` baja a 1 alta (`xlsx`). Smoke 22/22, build y CI verdes.
 - #4: `xlsx` solo se usa para exportar; validar fórmulas y compatibilidad.
 - #2 y #3 reducen el riesgo de perder datos y de fallos silenciosos.
 - #5 cubriría lo que el smoke HTTP no ve (UI, menú de perfil, formularios).

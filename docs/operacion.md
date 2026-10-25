@@ -57,6 +57,7 @@ Ver `docs/backup-restore.md` (commit estable anterior + backup previo).
 | 2026-10-25 | Restauración trimestral | BD temporal, 85/85 filas, BD eliminada | OK |
 | 2026-10-25 | Mejora UX | "Cerrar sesión" dentro del menú del perfil (barra superior) | OK |
 | 2026-10-25 | Evaluación v1.0.0 | baseline de métricas + `npm audit` + decisión de continuar | OK (encuesta pendiente) |
+| 2026-10-25 | Seguridad | `next` 16.4.3 + `next-auth` beta.32; audit prod 1 alta (`xlsx`) | OK |
 
 Próxima restauración de prueba: **2027-01-25**. Próxima revisión de
 actualizaciones: **2026-11-25**.
