@@ -102,6 +102,14 @@ async function main() {
   const invalid = await get("/panel", "authjs.session-token=invalido");
   check("cookie inválida redirige a /login", invalid.status === 307 || invalid.status === 302, `status=${invalid.status}`);
 
+  const panelHome = await get("/panel", sessions["admin@demo.com"].cookie);
+  const panelHomeBody = await panelHome.text();
+  check(
+    "botón cerrar sesión visible en el panel",
+    panelHome.status === 200 && panelHomeBody.includes("Cerrar sesión"),
+    `status=${panelHome.status}`,
+  );
+
   const rector = sessions["admin@demo.com"].cookie;
   const docente = sessions["profe@demo.com"].cookie;
   const alumno = sessions["alumno@demo.com"].cookie;

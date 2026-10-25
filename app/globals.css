@@ -194,6 +194,12 @@ button {
   .compact-profile svg {
     @apply ml-[3px] rotate-90 text-faint;
   }
+  .logout-button {
+    @apply flex h-9 items-center gap-[7px] rounded-lg border border-border bg-white px-3 text-[11px] font-semibold text-muted transition-colors;
+  }
+  .logout-button:hover {
+    @apply border-danger/30 bg-danger/5 text-danger;
+  }
   .menu-button {
     @apply hidden max-lg:grid;
   }

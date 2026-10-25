@@ -55,6 +55,7 @@ Ver `docs/backup-restore.md` (commit estable anterior + backup previo).
 | 2026-10-25 | Backup automático | tarea Windows 23:00, retención 30 d, ejecución exit 0 | OK |
 | 2026-10-25 | Runbook | parada + arranque con `start-prod.ps1` + health check | OK |
 | 2026-10-25 | Restauración trimestral | BD temporal, 85/85 filas, BD eliminada | OK |
+| 2026-10-25 | Mejora UX | botón "Cerrar sesión" visible en la barra superior | OK |
 
 Próxima restauración de prueba: **2027-01-25**. Próxima revisión de
 actualizaciones: **2026-11-25**.

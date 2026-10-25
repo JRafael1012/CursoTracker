@@ -238,6 +238,16 @@ export function Shell({
               </div>
               <Icon name="chevron" size={15} />
             </div>
+            <form action={logoutAction}>
+              <button
+                className="logout-button"
+                aria-label="Cerrar sesión"
+                title="Cerrar sesión"
+              >
+                <Icon name="logout" size={16} />
+                <span className="max-sm:hidden">Cerrar sesión</span>
+              </button>
+            </form>
           </div>
           {notifOpen && (
             <div className="notification-popover">
