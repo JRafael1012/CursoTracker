@@ -63,6 +63,14 @@ async function firstBytes(res, n) {
   return buf.subarray(0, n).toString("latin1");
 }
 
+function blockedByRole(res, body) {
+  if (res.status === 307 || res.status === 302) {
+    const loc = res.headers.get("location") ?? "";
+    return loc === "/panel" || loc.endsWith("/panel");
+  }
+  return res.status === 200 && body.includes("NEXT_REDIRECT;replace;/panel");
+}
+
 async function main() {
   const centro = await prisma.centro.findUniqueOrThrow({ where: { nombre: "Academia Demo" } });
   const norte = await prisma.centro.findUniqueOrThrow({ where: { nombre: "Colegio Norte" } });
@@ -102,8 +110,18 @@ async function main() {
 
   const notasEst = await get("/panel/notas", alumno);
   const asisEst = await get("/panel/asistencia", alumno);
-  check("estudiante redirigido de /panel/notas", notasEst.status === 307 || notasEst.status === 302, `status=${notasEst.status}`);
-  check("estudiante redirigido de /panel/asistencia", asisEst.status === 307 || asisEst.status === 302, `status=${asisEst.status}`);
+  const notasBody = await notasEst.text();
+  const asisBody = await asisEst.text();
+  check(
+    "estudiante redirigido de /panel/notas",
+    blockedByRole(notasEst, notasBody) && !notasBody.includes("<h1>Notas</h1>"),
+    `status=${notasEst.status} sin_contenido=${!notasBody.includes("<h1>Notas</h1>")}`,
+  );
+  check(
+    "estudiante redirigido de /panel/asistencia",
+    blockedByRole(asisEst, asisBody) && !asisBody.includes("<h1>Asistencia diaria</h1>"),
+    `status=${asisEst.status} sin_contenido=${!asisBody.includes("<h1>Asistencia diaria</h1>")}`,
+  );
 
   const qs = `estudianteId=${estudiante.id}&cursoId=${curso.id}&periodoId=${periodo.id}`;
   const exports = [

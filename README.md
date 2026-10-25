@@ -43,6 +43,13 @@ npx prisma db seed            # datos demo
 npm run dev                   # http://localhost:3000
 ```
 
+Para producción local en red:
+
+```powershell
+npm run build
+powershell -File scripts/start-prod.ps1   # next start en 0.0.0.0:3000
+```
+
 Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 `AUTH_SECRET` y `AUTH_URL`.
 
@@ -85,6 +92,7 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
 - [x] Fase 04 — Planificación y preparación (`plans/fase04_planificacion_preparacion.md`)
 - [x] Fase 05 — Desarrollo e integración (`plans/fase05_desarrollo_integracion.md`)
 - [x] Fase 06 — Verificación y validación (`plans/fase06_verificacion_validacion.md`)
+- [x] Fase 07 — Liberación y despliegue (`plans/fase07_liberacion_despliegue.md`)
 
 ## Estado
 
@@ -104,12 +112,16 @@ Requiere MySQL/MariaDB en `localhost:3306` y `.env` con `DATABASE_URL`,
   estudiante solo su boletín, padre solo sus hijos) ·
   M7 calidad y seguridad (backup Prisma + `mysqldump`, restauración
   documentada, vulnerabilidades revisadas) ·
-  Fase 06 verificación (Vitest, smoke test por rol, CI)
-- Verificado: `tsc` 0 · `eslint` 0 · `vitest` 3/3 · smoke test 21/21
-  (`scripts/smoke-test.mjs`) · login de 5 roles demo → `/panel` 200 ·
-  permisos por rol aplicados (estudiante redirigido de `/panel/notas` y
-  `/panel/asistencia`) · aislamiento multi-tenant (rector ajeno 404, padre
-  ajeno 403) · 6 exports con magic bytes correctos (`PK` xlsx, `%PDF` pdf) y
-  encoding UTF-8 · fix de sesión con cookie inválida (proxy valida JWE y la
-  limpia).
-- Siguiente: Fase 07 — Liberación y despliegue (plan pendiente).
+  Fase 06 verificación (Vitest, smoke test por rol, CI) ·
+  Fase 07 liberación v1.0.0 (build de producción en LAN, restauración real
+  probada, tag y release)
+- Verificado: `tsc` 0 · `eslint` 0 · `vitest` 3/3 · `next build` OK ·
+  smoke test 21/21 contra producción (`scripts/smoke-test.mjs`) · login de 5
+  roles demo → `/panel` 200 · permisos por rol aplicados (estudiante fuera de
+  `/panel/notas` y `/panel/asistencia`; en producción Next responde 200 con
+  `NEXT_REDIRECT` y sin contenido de la página) · aislamiento multi-tenant
+  (rector ajeno 404, padre ajeno 403) · 6 exports con magic bytes correctos
+  (`PK` xlsx, `%PDF` pdf) y encoding UTF-8 · restauración probada en BD
+  temporal: 67/67 filas · servidor accesible en `192.168.80.12:3000` · fix de
+  sesión con cookie inválida (proxy valida JWE y la limpia).
+- Siguiente: Fase 08 — Operación y mantenimiento.

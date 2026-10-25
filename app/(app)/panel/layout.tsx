@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/modules/auth/session";
 import { Shell } from "./_components/shell";
 
+export const instant = false;
+
 export default async function PanelLayout({
   children,
 }: {

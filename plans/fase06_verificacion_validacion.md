@@ -60,6 +60,9 @@ Validar el MVP Fase A antes de darlo por estable: aislamiento multi-tenant, cobe
 
 - `npm audit` revisado con plan de acción o resuelto.
 - Backup `mysqldump` funcional + **restauración probada** con evidencia.
+  ⚠ **Excepción (2026-10-25):** `mysqldump` de XAMPP falla por
+  `caching_sha2_password`; backup válido vía Prisma. La restauración solo está
+  documentada, no ejecutada. El ensayo real se traslada a Fase 07 (D3).
 - Tests de aislamiento multi-tenant en **verde**.
 - CI configurado y pasos básicos pasando.
 - `tsc` 0 · `eslint` 0.
@@ -83,4 +86,5 @@ Validar el MVP Fase A antes de darlo por estable: aislamiento multi-tenant, cobe
 
 ## Estado
 
-Completada — 2026-10-25. Criterios de aceptación cumplidos con la evidencia anterior.
+Completada con excepción — 2026-10-25. Todo en verde salvo la restauración real
+(REQ-NF-02), trasladada a Fase 07 D3.
