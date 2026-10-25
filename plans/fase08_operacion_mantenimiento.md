@@ -64,6 +64,8 @@ incidentes y restauración periódica. Base: `docs/backup-restore.md` y
 - Restauración trimestral: **85/85 filas**, conteos iguales, BD temporal
   eliminada.
 - `docs/operacion.md` con runbook y bitácora inicial.
+- CI en verde:
+  https://github.com/JRafael1012/CursoTracker/actions/runs/40222900606
 
 ## Estado
 
